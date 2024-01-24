@@ -1,6 +1,11 @@
+import { useContext } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 
 export default function LogIn({ navigation }) {
+    const { setUserToken } = useContext(AuthContext)
+    const handleLogin = () => {
+        setUserToken(true)
+    }
     return (
         <View style={styles.container}>
             <Text>Email address</Text>
@@ -9,7 +14,7 @@ export default function LogIn({ navigation }) {
             <TextInput/>
             <Button 
                 title="Log in"
-                onPress={() => navigation.reset("Menu")}
+                onPress={handleLogin}
             />
         </View>
     );

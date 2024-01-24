@@ -18,10 +18,8 @@ function Screens() {
 
 export default function Menu() {
     return (
-        <NavigationContainer independent={true}>
-            <Stack.Navigator>
-                <Stack.Screen name="Screens" component={Screens} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen name="Screens" component={Screens} />
+        </Stack.Navigator>
     );
 }
