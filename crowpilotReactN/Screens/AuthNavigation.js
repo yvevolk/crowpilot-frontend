@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import SignUp from './SignUp.js'
 import LogIn from './LogIn.js'
-import Menu from './Menu.js'
 function Welcome({ navigation }) {
     return (
         <View style={styles.container}>
@@ -12,7 +11,7 @@ function Welcome({ navigation }) {
         <Button
             title="Sign up"
             onPress={() =>
-            navigation.navigate("Signup")
+            navigation.navigate("SignUp")
             }
         />
         <Button
@@ -24,14 +23,15 @@ function Welcome({ navigation }) {
         </View>
     );
 }
+
 const Stack = createNativeStackNavigator();
+
 export default function AuthNavigation() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Welcome" component={Welcome} />
+            <Stack.Screen name="Welcome" component={Welcome} options={{headerShown:false}}/>
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="LogIn" component={LogIn} />
-            <Stack.Screen name="Menu" component={Menu} />
         </Stack.Navigator>
     );
 }

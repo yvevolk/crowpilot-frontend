@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 export default function Map() {
     return (
         <View style={styles.container}>
-            <Text>Map</Text>
+            <Text>This is Map</Text>
         </View>
     );
 }

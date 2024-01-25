@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { AuthContext } from '../Contexts/AuthContext';
 
 export default function LogIn({ navigation }) {
     const { setUserToken } = useContext(AuthContext)
