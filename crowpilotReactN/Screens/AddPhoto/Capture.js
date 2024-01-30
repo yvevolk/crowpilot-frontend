@@ -1,75 +1,59 @@
 import { Camera } from 'expo-camera';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
 export default function Capture() {
-  const [permission, requestPermission] = Camera.useCameraPermissions();
 
-  if (!permission) {
-    // Camera permissions are still loading
-    return <View />;
-  }
+  const cameraRef = useRef();
+  const [startCamera, setStartCamera] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
+  const [isPreview, setIsPreview] = useState(false)
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet
-    return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
-  }
-  async function snapPhoto() {       
-    console.log('Button Pressed');
-    if (Camera) {
-       console.log('Taking photo');
-       const options = { quality: 1, base64: true, fixOrientation: true, 
-       exif: true};
-       await Camera.takePictureAsync(options).then(photo => {
-          photo.exif.Orientation = 1;            
-           console.log(photo);            
-           });     
-     }
+  const accessCamera = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync()
+    if (status === 'granted') {
+      setStartCamera(true)
+    } else {
+      Alert.alert('Access denied')
     }
-  return (
-    <View style={styles.container}>
-      <Camera
-        style={styles.camera}
-        type="back"
-        onCameraReady={() => {
-          console.log("ready");
-          snapPhoto()
-        }}
-      >
-        <View style={styles.buttonContainer}>
-          <Button title="take pic" onPress={snapPhoto}/>
-        </View>
-      </Camera>
-    </View>
-  );
-}
+  }
+  
+  const onCameraReady = () => {
+    setCameraReady(true)
+  }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-});
+  const takePicture = async () => {
+    console.log(cameraRef.current)
+    if (cameraRef.current) {
+      const options = { quality: 0.5, base64: true, skipProcessing: true };
+      const data = await cameraRef.current.takePictureAsync(options)
+      console.log(data);
+      const source = data.uri;
+      if (source) {
+        await cameraRef.current.pausePreview();
+        setIsPreview(false);
+      }
+    }
+  }
+
+  if (startCamera) {
+    return (
+      <View>
+        <Button title="open camera" onPress={accessCamera} />
+      </View>
+    )
+  } else {
+    return (
+      <View style={{flex: 1}}>
+        <Camera
+          ref={cameraRef}
+          type="back"
+          style={{flex:1}}
+          onCameraReady={onCameraReady}
+        >
+          {cameraReady && <Button title="take" onPress={takePicture}/>}
+        </Camera>
+      </View>
+    )
+  }
+}
