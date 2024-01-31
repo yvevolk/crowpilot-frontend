@@ -23,11 +23,9 @@ export default function Capture() {
   }
 
   const takePicture = async () => {
-    console.log(cameraRef.current)
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true, skipProcessing: true };
       const data = await cameraRef.current.takePictureAsync(options)
-      console.log(data);
       const source = data.uri;
       if (source) {
         await cameraRef.current.pausePreview();
