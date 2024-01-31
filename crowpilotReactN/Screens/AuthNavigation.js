@@ -1,12 +1,16 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, Dimensions} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import SignUp from './SignUp.js'
 import LogIn from './LogIn.js'
 function Welcome({ navigation }) {
+
+const dimensions = Dimensions.get('window')
+const idealHW = (dimensions.width * 0.9)
+
     return (
         <View style={styles.container}>
-        <Text>CrowPilot</Text>
+        <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"width": idealHW, "height": idealHW, "resizeMode": "contain"}}></Image>
         <Text>Welcome!</Text>
         <Button
             title="Sign up"
