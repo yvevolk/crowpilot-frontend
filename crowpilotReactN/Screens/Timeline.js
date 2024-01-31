@@ -6,9 +6,6 @@ import PhotoCard from './PhotoCard';
 
 export default function Timeline() {
 
-const dimensions = Dimensions.get('window')
-const idealWidth = (dimensions.width * 0.9);
-
     const [photos, setPhotos] = useState([])
 
     useEffect(() => {
