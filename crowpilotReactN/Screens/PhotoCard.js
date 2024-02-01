@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Button, Dimensions} from 'react-native';
+import { StyleSheet, Image, Text, View, Dimensions} from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
 
@@ -12,15 +12,15 @@ const idealHW = (dimensions.width * 0.95);
             <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
             <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
         <View className = 'text-section' style = {styles.textSection}>
-        <Text style = {styles.header}>PASSENGER</Text>
+        <Text style = {styles.header}>Passenger</Text>
         <Text>{taken_by}</Text>
-        <Text style = {styles.header}>DATE</Text>
+        <Text style = {styles.header}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
-        <Text style = {styles.header}>ROUTE</Text>
+        <Text style = {styles.header}>Route</Text>
         <Text>{flight_origin} - {flight_dest}</Text>
         {remarks.length !== 0 && (
             <View>
-<Text style = {styles.header}>REMARKS</Text>
+<Text style = {styles.header}>Remarks</Text>
 <Text>{remarks}</Text>
 </View>
 )}
@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
     header: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
     },
     textSection: {
         paddingTop: 10,
