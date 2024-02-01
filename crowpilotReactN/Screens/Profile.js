@@ -1,10 +1,24 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
 import { useState, useEffect } from 'react'
 import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
+import  RankCalc  from './RankCalc.js'
+import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function Profile() {
+
+const shareUser = async () => {
+        try {
+          const result = await Share.share({
+            message:
+              `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
+          });
+        } catch (err) {
+          Alert.alert(err.message);
+        }}
+
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
 //const { setUserToken } = useContext(AuthContext);
@@ -12,33 +26,105 @@ const [userPhotos, setUserPhotos] = useState([])
 
 //user is currently hard coded in
 useEffect(() => {
-    getUser("hharr").then((user) => {
+    getUser('lovelyphotos').then((user) => {
         setUser(user);
         getUserPhotos(user.username).then((photos) => {
             setUserPhotos(photos)
         })
     })
 }, [])
-
+  
     return (
-        <View>
+        <>
+        <ScrollView>
+        <View style = {styles.card}>
             <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
             <Text style = {styles.subtitle}>{user.username}</Text>
-            <Image style = {{"height": 100, "width": 100}} source={{uri: `${user.avatar_url}`}}></Image>
-            <Text>Member since: {moment(user.acc_created).format('MMM yyyy')}</Text>
-            <Text>Photos taken: {userPhotos.length}</Text>
-            <View></View>
+            <View style = {styles.container}>
+            <View style = {styles.column}>
+            <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}></Image>
+            </View>
+            <View style = {styles.column}>
+                <View style = {styles.category}>
+            <Text style = {styles.header}>Member since</Text>
+            <Text>{moment(user.acc_created).format('MMM yyyy')}</Text></View>
+            <View style = {styles.category}>
+            <Text style = {styles.header}>Photos taken</Text>
+            <Text>{userPhotos.length}</Text></View>
+            <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
+            <RankCalc length = {userPhotos.length}></RankCalc>
+            </View></View>
+            </View>
         </View>
+        <Button title = 'Edit'></Button>
+        <Button title = 'Share' onPress = {shareUser}></Button>
+        <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
+            {userPhotos.map((photo) => {
+                return (
+                    <View key = {`${photo._id}`} style = {styles.singleCard}>
+                        <SmallPhotoCard
+                        photo_url = {photo.photo_url}
+                        taken_by = {photo.taken_by}
+                        date_taken = {photo.date_taken}
+                        flight_origin={photo.flight_origin}
+                        flight_dest={photo.flight_dest}
+                        remarks = {photo.remarks}></SmallPhotoCard>
+                    </View>
+                )
+            })}
+        </ScrollView>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
+    card: {
+        margin: 5, 
+        padding: 10,
+        borderColor: '#CECACE',
+        borderWidth: 3,
+        borderStyle: 'solid',
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
     name: {
         textAlign: 'center',
-        fontSize: 40
+        fontSize: 30,
+        fontWeight: 'bold'
+    },
+    header: {
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
     },
     subtitle: {
-        fontSize: 30,
+        fontSize: 20,
         textAlign: 'center'
+    },
+    container: {
+        flexDirection: 'row',
+        alignContent: 'stretch',
+        width: '50%',
+            },
+    column: {
+        padding: '10%',
+        alignSelf: 'center'
+    },
+    category: {
+      paddingTop: '5%',
+      paddingBottom: '5%'
+    },
+    profilePic: {
+        height: 150,
+        width: 150,
+        borderRadius: 20,
+        borderColor: '#CECACE',
+        borderWidth: 3
+        },
+    userPhotoTitle: {
+        fontSize: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        fontWeight: 'bold'
     }
 })
