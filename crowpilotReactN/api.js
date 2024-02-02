@@ -30,4 +30,13 @@ export const getUserPhotos = async (username) => {
     console.log(err)
   }
 }
+
+export const patchUserProfile = async (newInfo, username) => {
+  try {
+    const response = await request.patch(`/users/${username}`, newInfo)
+    return response.data;
+  } catch(err) {
+    console.log(err)
+  }
+}
   

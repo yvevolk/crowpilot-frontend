@@ -6,11 +6,11 @@ import LogIn from './LogIn.js'
 function Welcome({ navigation }) {
 
 const dimensions = Dimensions.get('window')
-const idealHW = (dimensions.width * 0.9)
+const idealHW = (dimensions.width * 0.8)
 
     return (
         <View style={styles.container}>
-        <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"width": idealHW, "height": idealHW, "resizeMode": "contain"}}></Image>
+        <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"width": idealHW, "height": idealHW, "resizeMode": "contain", "margin": 20}}></Image>
         <Text>Welcome!</Text>
         <Button
             title="Sign up"
@@ -18,6 +18,7 @@ const idealHW = (dimensions.width * 0.9)
             navigation.navigate("SignUp")
             }
         />
+        <View style = {styles.between}></View>
         <Button
             title="Log in"
             onPress={() =>
@@ -46,4 +47,7 @@ export default function AuthNavigation() {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    between: {
+        padding: 10
+    }
   });

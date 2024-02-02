@@ -2,16 +2,18 @@ import { View, Text, Image, StyleSheet, Button, Alert, Share } from "react-nativ
 import { useState, useEffect } from 'react'
 import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
-import  RankCalc  from './RankCalc.js'
+import  RankCalc  from './RankCalc.js';
+import EditProfile from "./EditProfile.js";
 import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function Profile() {
+export default function Profile({ navigation }) {
 
 const shareUser = async () => {
         try {
-          const result = await Share.share({
+          await Share.share({
             message:
               `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
           });
@@ -22,7 +24,6 @@ const shareUser = async () => {
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
 //const { setUserToken } = useContext(AuthContext);
-
 
 //user is currently hard coded in
 useEffect(() => {
@@ -56,7 +57,7 @@ useEffect(() => {
             </View></View>
             </View>
         </View>
-        <Button title = 'Edit'></Button>
+        <Button title = 'Edit' onPress = {() => {navigation.navigate("Edit Profile")}}></Button>
         <Button title = 'Share' onPress = {shareUser}></Button>
         <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
             {userPhotos.map((photo) => {
@@ -76,6 +77,25 @@ useEffect(() => {
         </>
     )
 }
+
+const Stack = createNativeStackNavigator();
+
+function ProfileNav() {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options= {{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Edit Profile"
+          component={EditProfile}
+          options= {{headerShown: false}}
+        />
+      </Stack.Navigator>
+    );
+  }
 
 const styles = StyleSheet.create({
     card: {
@@ -128,3 +148,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 })
+
+module.exports = ProfileNav;
