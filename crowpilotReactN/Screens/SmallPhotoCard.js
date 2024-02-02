@@ -69,8 +69,7 @@ const styles = StyleSheet.create({
         resizeMode: "cover",
         borderRadius: 50,
         borderColor: '#CECACE',
-        borderWidth: 3,
-        borderStyle: 'solid'
+        borderWidth: 3
     }
   });
 
