@@ -85,7 +85,6 @@ useEffect(() => {
       <Button title = "Submit" onPress = {handleUpdate}></Button></View>
         </View>
     )
-
 }
 
 const styles = StyleSheet.create({
@@ -108,3 +107,4 @@ const styles = StyleSheet.create({
         padding: '10%',
     }
 })
+}
