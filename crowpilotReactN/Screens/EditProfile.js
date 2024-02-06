@@ -2,7 +2,7 @@ import { View, Text, Image, StyleSheet, Button, Alert, TextInput} from "react-na
 import { useState, useEffect } from 'react'
 import { patchUserProfile } from "../api";
 
-export default function EditProfile() {
+export default function EditProfile({navigation}) {
 
 const username = "lovelyphotos"
 const editObject = {};
@@ -10,7 +10,12 @@ const editObject = {};
 const handleUpdate = (e) => {
     e.preventDefault();
     {patchUserProfile(editObject, username).then((res) => {
-        Alert.alert("Profile updated.")
+        Alert.alert("", "Profile updated.", [
+            {
+                text: "ok",
+                onPress: navigation.goBack
+            }
+        ])
     })
     .catch((err) => {
         Alert.alert("Something went wrong.")

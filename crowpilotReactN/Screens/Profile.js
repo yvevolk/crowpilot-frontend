@@ -9,7 +9,7 @@ import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function Profile({ navigation }) {
+function Profile({ navigation }) {
 
 const shareUser = async () => {
         try {
@@ -57,7 +57,7 @@ useEffect(() => {
             </View></View>
             </View>
         </View>
-        <Button title = 'Edit' onPress = {() => {navigation.navigate("Edit Profile")}}></Button>
+        <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
         <Button title = 'Share' onPress = {shareUser}></Button>
         <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
             {userPhotos.map((photo) => {
@@ -80,16 +80,16 @@ useEffect(() => {
 
 const Stack = createNativeStackNavigator();
 
-function ProfileNav() {
+export default function ProfileNav() {
     return (
       <Stack.Navigator>
         <Stack.Screen
-          name="Profile"
+          name="ProfileScreen"
           component={Profile}
           options= {{headerShown: false}}
         />
         <Stack.Screen
-          name="Edit Profile"
+          name="EditProfile"
           component={EditProfile}
           options= {{headerShown: false}}
         />
@@ -148,5 +148,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 })
-
-module.exports = ProfileNav;
