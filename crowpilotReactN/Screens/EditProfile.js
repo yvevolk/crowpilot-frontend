@@ -44,5 +44,4 @@ const handleUpdate = (e) => {
       <Button title = "Submit" onPress = {handleUpdate}></Button>
         </View>
     )
-
 }
