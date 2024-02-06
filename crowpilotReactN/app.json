@@ -4,10 +4,10 @@
     "slug": "crowpilotReactN",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Crowpilot_notext.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/Crowpilot_notext.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
