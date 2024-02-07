@@ -1,24 +1,25 @@
 import { Cloudinary } from "@cloudinary/url-gen";
 import { View, Text, Button } from "react-native";
 export default function () {
+    const cld = new Cloudinary({
+        cloud: {
+          cloudName: 'dproc2gse'
+        },
+        url: {
+            secure: true
+        }
+    });
     const handlePost = async () => {
-        const cld = new Cloudinary({
-            cloud: {
-              cloudName: 'dproc2gse'
-            },
-            url: {
-                secure: true
-            }
-        });
     
         const options = {
-            upload_preset: 'sample_preset',
-            tag: 'sample',
+            upload_preset: 'ml_default',
+            tag: 'ml_default',
             unsigned: true
         }
     
-        await upload(cld, {file: '../../assets/catView.jpeg' , options: options, callback: (response) => {
+        await upload(cld, {file: '../../assets/catView.jpeg' , options: options, callback: (error, response) => {
             console.log(response);
+            console.log(error)
         }})
     }
     return (
