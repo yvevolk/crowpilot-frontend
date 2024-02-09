@@ -1,27 +1,34 @@
 import { StyleSheet, Image, Text, View, Dimensions} from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
-
-const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks}) => {
-
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
+const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks}) => {
+
     return(<>
         <View key = {`${_id}`} style = {styles.singleCard}>
-            <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
+            <View style = {styles.header}>
+            <Text style = {styles.takenWhen}>{moment(date_taken).fromNow()}</Text>
+            </View>
             <View style = {styles.container}>
             <View style = {styles.column}>
             <Image style = {styles.image} source={{uri: `${photo_url}`}}></Image>
             </View>
         <View style = {styles.column}>
-        <Text style = {styles.header}>Date</Text>
+        {taken_by && (
+        <View>
+            <Text style = {styles.heading}>Passenger</Text>
+            <Text>{taken_by}</Text>
+        </View>
+        )}
+        <Text style = {styles.heading}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
-        <Text style = {styles.header}>Route</Text>
+        <Text style = {styles.heading}>Route</Text>
         <Text>{flight_origin} - {flight_dest}</Text>
         {remarks.length !== 0 && (
             <View>
-<Text style = {styles.header}>Remarks</Text>
+<Text style = {styles.heading}>Remarks</Text>
 <Text>{remarks}</Text>
 </View>
 )}</View>
@@ -31,13 +38,15 @@ const idealHW = (dimensions.width * 0.95);
 }
 
 const styles = StyleSheet.create({
-    postedWhen: {
-        textAlign: 'right',
-        fontStyle: 'italic',
-        paddingRight: 10,
-        paddingBottom: 10
-    },
     header: {
+        padding: 10,
+    },
+     takenWhen: {
+     fontStyle: 'italic',
+     textAlign: 'right',
+     paddingRight: 10,
+    },
+    heading: {
         fontWeight: 'bold',
         textTransform: 'uppercase'
     },
@@ -46,11 +55,8 @@ const styles = StyleSheet.create({
         borderColor: '#CECACE',
         borderWidth: 2,
         borderStyle: 'solid',
-        marginTop: 10,
-        marginBottom: 10,
-        borderRadius: 20,
-        padding: 10,
-        paddingBottom: 20,
+        width: idealHW,
+        margin: 10,
     },
     container: {
         flexDirection: 'row',
@@ -62,14 +68,17 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     image: {
-        height: 200, 
-        width: 150,
+        height: (idealHW*0.6), 
+        width: (idealHW*0.4),
         marginLeft: 10,
         marginRight: 10,
         resizeMode: "cover",
         borderRadius: 50,
         borderColor: '#CECACE',
-        borderWidth: 3
+        borderWidth: 3,
+        marginLeft: 10,
+        marginRight: 10,
+        marginBottom: 10
     }
   });
 

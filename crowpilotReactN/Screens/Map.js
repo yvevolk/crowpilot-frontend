@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
-import  MapView, { Marker, Callout, PROVIDER_GOOGLE} from 'react-native-maps';
+import { StyleSheet, Text, View, Image, Modal } from 'react-native';
+import  MapView, { Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { useState, useEffect } from 'react'
 import { getAllPhotos } from '../api'
+import { Overlay } from '@rneui/themed';
 import SmallPhotoCard from './SmallPhotoCard';
 
 export default function Map() {
 
+const [visible, setVisible] = useState(false);
+const toggleOverlay = () => {setVisible(!visible)};
 
 const [photos, setPhotos] = useState([]);
 useEffect(() => {
@@ -14,6 +17,8 @@ useEffect(() => {
     }),
     [photos]
 })
+
+const [overlayData, setOverlayData] = useState({})
 
     return (
         <View>
@@ -32,18 +37,25 @@ useEffect(() => {
                     coordinate={{
                         latitude: photo.location.lat,
                         longitude: photo.location.long,
-                    }}>
-                        <Callout>
-                            <Text>Photo by {photo.taken_by}</Text>
-                        <SmallPhotoCard
-                        photo_url = {photo.photo_url}
-                        taken_by = {photo.taken_by}
-                        date_taken = {photo.date_taken}
-                        flight_origin={photo.flight_origin}
-                        flight_dest={photo.flight_dest}
-                        remarks = {photo.remarks}></SmallPhotoCard>
-                        </Callout>
-                    </Marker>)
+                    }}
+                    onPress={() => {setOverlayData(photo);
+                    toggleOverlay()}}>
+                <Overlay isVisible = {visible}
+                onBackdropPress={toggleOverlay}
+                backdropStyle = {{
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)'
+                }}
+                >
+                 <SmallPhotoCard
+                        photo_url = {overlayData.photo_url}
+                        taken_by = {overlayData.taken_by}
+                        date_taken = {overlayData.date_taken}
+                        flight_origin={overlayData.flight_origin}
+                        flight_dest={overlayData.flight_dest}
+                        remarks = {overlayData.remarks}></SmallPhotoCard>
+                </Overlay>
+                </Marker>
+                    )
             })}
     </MapView>
   </View>
