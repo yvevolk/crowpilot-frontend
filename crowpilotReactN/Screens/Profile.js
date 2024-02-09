@@ -65,7 +65,7 @@ useEffect(() => {
                     <View key = {`${photo._id}`} style = {styles.singleCard}>
                         <SmallPhotoCard
                         photo_url = {photo.photo_url}
-                        taken_by = {photo.taken_by}
+                        taken_by = ""
                         date_taken = {photo.date_taken}
                         flight_origin={photo.flight_origin}
                         flight_dest={photo.flight_dest}
