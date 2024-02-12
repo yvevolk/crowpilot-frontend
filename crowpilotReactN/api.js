@@ -39,4 +39,3 @@ export const patchUserProfile = async (newInfo, username) => {
     console.log(err)
   }
 }
-  
