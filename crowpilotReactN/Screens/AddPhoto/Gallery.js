@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function Gallery() {
   const [image, setImage] = useState(null);
-
+ 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,10 +26,10 @@ export default function Gallery() {
   const handleUpLoad = async (file) => {
     const data = new FormData()
     data.append('file', file)
-    data.append('upload_preset', 'crowpilot')
-    data.append('cloud_name', 'dproc2gse')
+    data.append('upload_preset', process.env.EXPO_PUBLIC_UPLOAD_PRESET)
+    data.append('cloud_name', process.env.EXPO_PUBLIC_CLOUD_NAME)
 
-    fetch('https://api.cloudinary.com/v1_1/dproc2gse/image/upload', {
+    fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL, {
         method: 'post',
         body: data
     })
