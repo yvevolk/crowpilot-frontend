@@ -18,7 +18,7 @@ const idealHW = (dimensions.width * 0.95);
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.header}>Route</Text>
         <Text>{flight_origin} - {flight_dest}</Text>
-        {remarks.length !== 0 && (
+        {remarks && (
             <View>
 <Text style = {styles.header}>Remarks</Text>
 <Text>{remarks}</Text>
