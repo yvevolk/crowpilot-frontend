@@ -3,13 +3,13 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { AuthContext } from '../Contexts/AuthContext';
 
 export default function LogIn({ navigation }) {
-    const { setUserToken } = useContext(AuthContext)
+    const { userToken, setUserToken } = useContext(AuthContext)
     const handleLogin = () => {
-        setUserToken(true)
+        setUserToken({token: true, username: userToken.username})
     }
     return (
         <View style={styles.container}>
-            <Text>Email address</Text>
+            <Text>Username</Text>
             <TextInput />
             <Text>Password</Text>
             <TextInput/>
