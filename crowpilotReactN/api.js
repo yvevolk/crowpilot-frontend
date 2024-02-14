@@ -24,7 +24,7 @@ export const getUser = async (username) => {
 
 export const getUserPhotos = async (username) => {
   try {
-    const response = await request.get(`/photos/${username}`)
+    const response = await request.get(`/users/${username}/photos`)
     return response.data;
   } catch (err) {
     console.log(err)
