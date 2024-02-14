@@ -2,7 +2,7 @@ import { StyleSheet, Image, Text, View, Dimensions} from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
 
-const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks}) => {
+const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks }) => {
 
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
@@ -13,7 +13,7 @@ const idealHW = (dimensions.width * 0.95);
             <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
-        <Text>{taken_by}</Text>
+        <Text onPress = {() => console.log(`${taken_by}`)}>{taken_by}</Text>
         <Text style = {styles.header}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.header}>Route</Text>

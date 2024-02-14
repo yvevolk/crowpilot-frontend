@@ -4,10 +4,8 @@ import SignUp from './SignUp.js'
 import LogIn from './LogIn.js';
 import { Video } from 'expo-av';
 
-
 const dimensions = Dimensions.get('screen')
 const idealHW = (dimensions.width * 0.8)
-
 
 function Welcome({ navigation }) {
 

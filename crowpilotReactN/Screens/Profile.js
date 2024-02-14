@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
 import  RankCalc  from './RankCalc.js';
@@ -23,11 +23,11 @@ const shareUser = async () => {
 
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
-//const { setUserToken } = useContext(AuthContext);
+const { userToken, setUserToken } = useContext(AuthContext);
 
 //user is currently hard coded in
 useEffect(() => {
-    getUser('lovelyphotos').then((user) => {
+    getUser(userToken.username).then((user) => {
         setUser(user);
         getUserPhotos(user.username).then((photos) => {
             setUserPhotos(photos)

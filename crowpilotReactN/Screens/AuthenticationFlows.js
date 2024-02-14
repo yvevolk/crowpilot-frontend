@@ -24,7 +24,7 @@ export default function AuthenticationFlows() {
             <NavigationContainer>
                 <Stack.Navigator>
                     {
-                    userToken == null ? 
+                    userToken.token == null ? 
                     (<Stack.Screen name="AuthNavigation" component={AuthNavigation} options={{headerShown:false}}/> ) : 
                     (<Stack.Screen name="AppNavigation" component={AppNavigation} options={{headerShown:false}}/>)
                     }
