@@ -34,11 +34,7 @@ export default function Gallery() {
         body: data
     })
     .then(res => res.json())
-    .then(data => {
-      console.log(data)
-    })
-    
-}
+ }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Button title="Pick an image from camera roll" onPress={pickImage} />
