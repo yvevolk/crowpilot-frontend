@@ -91,7 +91,7 @@ export default function TestPostUrl({ route, navigation }) {
                         confirmInfo.lat.state === false &&
                         <>
                             <Text>lat:</Text>
-                            <TextInput value={confirmInfo.lat.value} onChangeText={(e) => {
+                            <TextInput value={confirmInfo.lat.value.toString()} onChangeText={(e) => {
                                 setConfirmInfo({...confirmInfo, lat: { state: false, value: e }})
                             }} />
                             <Button style={styles.button} title="ok" onPress={() => {
@@ -127,7 +127,7 @@ export default function TestPostUrl({ route, navigation }) {
                         confirmInfo.date.state === false &&
                         <>
                             <Text>date:</Text>
-                            <TextInput value={confirmInfo.date.value} onChangeText={(e) => {
+                            <TextInput value={confirmInfo.date.value.toString()} onChangeText={(e) => {
                                 setConfirmInfo({...confirmInfo, date: { state: false, value: e }})
                             }} />
                             <Button style={styles.button} title="ok" onPress={() => {

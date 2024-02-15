@@ -10,7 +10,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader";
 
-function Profile({ navigation }) {
+function Profile({ navigation, route }) {
+
+console.log(route.params)
 
 const shareUser = async () => {
         try {
@@ -24,7 +26,7 @@ const shareUser = async () => {
 
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
-const { userToken, setUserToken } = useContext(AuthContext)
+const { userToken } = useContext(AuthContext)
 const [isLoading, setIsLoading] = useState(true)
 
 useEffect(() => {

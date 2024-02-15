@@ -1,11 +1,11 @@
-import { ActivityIndicator, StyleSheet, Image, Text, View, Button, Dimensions} from 'react-native';
+import { StyleSheet, Image, Text, View, Button, Dimensions} from 'react-native';
 import { useState, useEffect } from 'react'
 import { getAllPhotos } from '../api';
 import { ScrollView } from 'react-native-gesture-handler';
 import PhotoCard from './PhotoCard';
 import Loader from './Loader';
 
-export default function Timeline() {
+export default function Timeline( {navigation} ) {
 
 const [photos, setPhotos] = useState([])
 const [isLoading, setIsLoading] = useState(true)
@@ -30,12 +30,14 @@ useEffect(() => {
                     return(
                     <View key = {`${photo._id}`} style = {styles.singleCard}>
                         <PhotoCard
+                        navigation = {navigation}
                         photo_url = {photo.photo_url}
                         taken_by = {photo.taken_by}
                         date_taken = {photo.date_taken}
                         flight_origin={photo.flight_origin}
                         flight_dest={photo.flight_dest}
-                        remarks = {photo.remarks}></PhotoCard>
+                        remarks = {photo.remarks}
+                        />
                     </View>
                     )
                 })}
