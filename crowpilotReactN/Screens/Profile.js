@@ -10,82 +10,90 @@ import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader";
 
-function Profile({ navigation, route }) {
+function Profile({ route, navigation}) {
 
-console.log(route.params)
-
-const shareUser = async () => {
-        try {
-          await Share.share({
-            message:
-              `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
-          });
-        } catch (err) {
-          Alert.alert(err.message);
-        }}
-
+const [isLoading, setIsLoading] = useState(true)
+const { userToken } = useContext(AuthContext)
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
-const { userToken } = useContext(AuthContext)
-const [isLoading, setIsLoading] = useState(true)
+    let username;
+    
+if (route) {
+    const { otherUser } = route.params
+    username = otherUser
+} else {
+    username = userToken.username
+}
 
 useEffect(() => {
-    getUser(userToken.username).then((user) => {
+    getUser(username)
+    .then((user) => {
         setUser(user);
-        getUserPhotos(user.username).then((photos) => {
+        getUserPhotos(user.username)
+        .then((photos) => {
             setUserPhotos(photos)
         })
     })
 }, [])
+    
+const shareUser = async () => {
+    try {
+        await Share.share({
+        message:
+            `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
+        });
+    } catch (err) {
+        Alert.alert(err.message);
+    }
+}
 
 if (isLoading) {
     setTimeout(() => setIsLoading(false), 1000)
     return (
         <Loader/>
-    );
-}
-  
-    return (
-        <>
-        <ScrollView>
-        <View style = {styles.card}>
-            <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
-            <Text style = {styles.subtitle}>{user.username}</Text>
-            <View style = {styles.container}>
-            <View style = {styles.column}>
-            <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}></Image>
-            </View>
-            <View style = {styles.column}>
-                <View style = {styles.category}>
-            <Text style = {styles.header}>Member since</Text>
-            <Text>{moment(user.acc_created).format('MMM yyyy')}</Text></View>
-            <View style = {styles.category}>
-            <Text style = {styles.header}>Photos taken</Text>
-            <Text>{userPhotos.length}</Text></View>
-            <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
-            <RankCalc length = {userPhotos.length}></RankCalc>
-            </View></View>
-            </View>
-        </View>
-        <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
-        <Button title = 'Share' onPress = {shareUser}></Button>
-        <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
-            {userPhotos.map((photo) => {
-                return (
-                    <View key = {`${photo._id}`} style = {styles.singleCard}>
-                        <SmallPhotoCard
-                        photo_url = {photo.photo_url}
-                        taken_by = ""
-                        date_taken = {photo.date_taken}
-                        flight_origin={photo.flight_origin}
-                        flight_dest={photo.flight_dest}
-                        remarks = {photo.remarks}></SmallPhotoCard>
-                    </View>
-                )
-            })}
-        </ScrollView>
-        </>
     )
+}
+return (
+    <>
+    <ScrollView>
+    <View style = {styles.card}>
+        <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
+        <Text style = {styles.subtitle}>{user.username}</Text>
+        <View style = {styles.container}>
+        <View style = {styles.column}>
+        <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}></Image>
+        </View>
+        <View style = {styles.column}>
+            <View style = {styles.category}>
+        <Text style = {styles.header}>Member since</Text>
+        <Text>{moment(user.acc_created).format('MMM yyyy')}</Text></View>
+        <View style = {styles.category}>
+        <Text style = {styles.header}>Photos taken</Text>
+        <Text>{userPhotos.length}</Text></View>
+        <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
+        <RankCalc length = {userPhotos.length}></RankCalc>
+        </View></View>
+        </View>
+    </View>
+    <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
+    <Button title = 'Share' onPress = {shareUser}></Button>
+    <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
+        {userPhotos.map((photo) => {
+            return (
+                <View key = {`${photo._id}`} style = {styles.singleCard}>
+                    <SmallPhotoCard
+                    photo_url = {photo.photo_url}
+                    taken_by = ""
+                    date_taken = {photo.date_taken}
+                    flight_origin={photo.flight_origin}
+                    flight_dest={photo.flight_dest}
+                    remarks = {photo.remarks}></SmallPhotoCard>
+                </View>
+            )
+        })}
+    </ScrollView>
+    </>
+)
 }
 
 const Stack = createNativeStackNavigator();
