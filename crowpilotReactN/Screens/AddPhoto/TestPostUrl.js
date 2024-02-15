@@ -1,19 +1,45 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions } from 'react-native';
 import axios from "axios"
-export default function TestPostUrl({ navigation }) {
-    const data = {
-        location: {
-            lat:  45.009133,
-            long: -1.7062073
-            },
-            photo_url: "https://velvetescape.com/wp-content/uploads/2015/05/IMG_0399_2-1280x920.jpeg",
-            taken_by: "user123",
-            photo_type: "land",
-            date_taken: "2022-02-02",
-            flight_code: "BA663",
-            flight_origin: "LHR",
-            flight_dest: "WMI",
+import { useContext } from 'react';
+import { AuthContext } from '../../Contexts/AuthContext';
+const dimensions = Dimensions.get('window')
+export default function TestPostUrl({ route, navigation }) {
+    const [confirmInfo, setConfirmInfo] = useState({
+        lat: {
+            state: null,
+            value: 45.009133
+        },
+        long: {
+            state: null,
+            value: -1.000050
+        },
+        type: {
+            state: null,
+            value: "air"
+        },
+        date: {
+            state: null,
+            value: "2022-02-02"
+        },
+        code: {
+            state: null,
+            value: "BA663"
+        },
+        origin: {
+            state: null,
+            value: "LHR"
+        },
+        dest: {
+            state: null,
+            value: "WMI"
+        },
+    })
+    const { userToken } = useContext(AuthContext)
+    const { photo_url } = route.params
+    let data = {
+            photo_url,
+            taken_by: userToken.username,
             remarks: "This is a remark from react native"
     }
     const handlePost = () => {
@@ -39,43 +65,87 @@ export default function TestPostUrl({ navigation }) {
     }
     return (
         <View style={styles.container}>
+            <Text
+                style={{fontSize:20, fontWeight:100}}
+            >
+                Info about the picture
+            </Text>
             <Text>Photo URL</Text>
-            <TextInput 
-            // onChangeText={text => data.photo_url = text}
-            />
-            <Text>Location</Text>
-            <TextInput
-            // onChangeText={text => data.location = text}
-            />
-            <Text>Taken by</Text>
-            <TextInput 
-            // onChangeText={text => data.taken_by = text}
-            />
-            <Text>Date taken</Text>
-            <TextInput 
-            // onChangeText={text => data.date_taken = text}
-            />
-            <Text>Photo type</Text>
-            <TextInput 
-            // onChangeText={text => data.photo_type = text}
-            />
-            <Text>Flight code</Text>
-            <TextInput 
-            // onChangeText={text => data.photo_type = text}
-            />
-            <Text>Flight origin</Text>
-            <TextInput 
-            // onChangeText={text => data.flight_origin = text}
-            />
-            <Text>flight destination</Text>
-            <TextInput 
-            // onChangeText={text => data.flight_dest = text}
-            />
-            <Text>remarks</Text>
-            <TextInput 
-            // onChangeText={text => data.remarks = text}
-            />
+            <Text>{photo_url}</Text>
+            {/* Location */}
+            <>
+                <Text>Location</Text>
+                <View style={{
+                    width: dimensions.width*0.8,
+                    flexDirection: 'row',
+                }}>
+                    {
+                        confirmInfo.lat.state === null &&
+                        <>
+                            <Text>lat: {confirmInfo.lat.value}</Text>
+                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, lat:true})} />
+                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, lat: { state: false, value: confirmInfo.lat.value } })} />
+                        </>
+                    }
+                    {
+                        confirmInfo.lat.state === false &&
+                        <>
+                            <Text>lat:</Text>
+                            <TextInput value={confirmInfo.lat.value} onChangeText={(e) => {
+                                setConfirmInfo({...confirmInfo, lat: { state: false, value: e }})
+                            }} />
+                            <Button style={styles.button} title="ok" onPress={() => {
+                                setConfirmInfo({ ...confirmInfo, lat: { state: true, value: confirmInfo.lat.value } })
+                            }} />
+                        </>
+                    }
+                    {
+                        confirmInfo.lat.state === true &&
+                        <>
+                            <Text>lat: {confirmInfo.lat.value}</Text>
+                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, lat: { state: false, value: confirmInfo.lat.value }})}/>
+                        </>
+                    }
+                </View>
+            </>
+            {/* Date */}
+            <>
+                <View style={{
+                    width: dimensions.width,
+                    flexDirection: 'row',
+                    
+                }}>
+                    {
+                        confirmInfo.date.state === null &&
+                        <>
+                            <Text>date: {confirmInfo.date.value}</Text>
+                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, date:true})} />
+                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, date: { state: false, value: confirmInfo.date.value } })} />
+                        </>
+                    }
+                    {
+                        confirmInfo.date.state === false &&
+                        <>
+                            <Text>date:</Text>
+                            <TextInput value={confirmInfo.date.value} onChangeText={(e) => {
+                                setConfirmInfo({...confirmInfo, date: { state: false, value: e }})
+                            }} />
+                            <Button style={styles.button} title="ok" onPress={() => {
+                                setConfirmInfo({ ...confirmInfo, date: { state: true, value: confirmInfo.date.value } })
+                            }} />
+                        </>
+                    }
+                    {
+                        confirmInfo.date.state === true &&
+                        <>
+                            <Text>date: {confirmInfo.date.value}</Text>
+                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, date: { state: false, value: confirmInfo.date.value }})}/>
+                        </>
+                    }
+                </View>
+            </>
             <Button 
+                style={styles.button}
                 title="Test Post"
                 onPress={handlePost}
             />
@@ -89,4 +159,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    button: {
+        width: 30
+    }
   });

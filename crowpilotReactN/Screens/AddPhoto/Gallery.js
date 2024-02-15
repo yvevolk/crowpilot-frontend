@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Image, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function Gallery() {
+export default function Gallery({navigation}) {
   const [image, setImage] = useState(null);
  
   const pickImage = async () => {
@@ -34,6 +34,12 @@ export default function Gallery() {
         body: data
     })
     .then(res => res.json())
+    .then((data) => {
+      console.log(data.secure_url)
+      navigation.navigate("TestPost", {
+        photo_url: data.secure_url
+      })
+    })
  }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

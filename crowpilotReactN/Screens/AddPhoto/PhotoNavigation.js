@@ -3,7 +3,6 @@ import ChooseSource from "./ChooseSource";
 import Capture from "./Capture";
 import Gallery from "./Gallery";
 import TestPostUrl from "./TestPostUrl"
-import TestCloudinary from "./TestCloudinary";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +13,6 @@ export default function PhotoNvigation() {
             <Stack.Screen name="Capture" component={Capture} />
             <Stack.Screen name="Gallery" component={Gallery} />
             <Stack.Screen name="TestPost" component={TestPostUrl} />
-            <Stack.Screen name="TestCloudinary" component={TestCloudinary} />
         </Stack.Navigator>
     )
 }
