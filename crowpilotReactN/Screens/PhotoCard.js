@@ -9,8 +9,8 @@ const idealHW = (dimensions.width * 0.95);
 
     return(
         <View key = {`${_id}`} style = {styles.singleCard}>
-            <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
-            <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
+        <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
+        <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
         <Text onPress = {() => console.log(`${taken_by}`)}>{taken_by}</Text>

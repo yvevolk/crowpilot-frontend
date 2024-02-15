@@ -1,14 +1,18 @@
-import { StyleSheet, Text, View, Image, Modal } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
 import  MapView, { Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { useState, useEffect } from 'react'
 import { getAllPhotos } from '../api'
 import { Overlay } from '@rneui/themed';
 import SmallPhotoCard from './SmallPhotoCard';
+import Loader from './Loader'
 
 export default function Map() {
 
+const [isLoading, setIsLoading] = useState(true)
 const [visible, setVisible] = useState(false);
+const [overlayData, setOverlayData] = useState({})
 const toggleOverlay = () => {setVisible(!visible)};
+
 
 const [photos, setPhotos] = useState([]);
 useEffect(() => {
@@ -18,7 +22,12 @@ useEffect(() => {
     [photos]
 })
 
-const [overlayData, setOverlayData] = useState({})
+if (isLoading) {
+    setTimeout(() => setIsLoading(false))
+    return (
+        <Loader/>
+    );
+}
 
     return (
         <View>

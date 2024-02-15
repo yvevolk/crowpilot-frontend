@@ -1,15 +1,16 @@
 import { StyleSheet, Text, View, Button, Image, Dimensions, Animated } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useState } from 'react';
 import SignUp from './SignUp.js'
 import LogIn from './LogIn.js';
 import { Video } from 'expo-av';
+import Loader from './Loader.js';
 
 const dimensions = Dimensions.get('screen')
 const idealHW = (dimensions.width * 0.8)
 
 function Welcome({ navigation }) {
-
-    return (
+        return (
         <View style={styles.container}>
         <Video
         style = {styles.video}

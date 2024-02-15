@@ -5,6 +5,7 @@ import { AuthContext } from '../Contexts/AuthContext';
 import AuthNavigation from './AuthNavigation';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigation from './AppNavigation';
+import Loader from './Loader';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,12 +13,9 @@ export default function AuthenticationFlows() {
     const [isLoading, setIsLoading] = useState(true);
     const { userToken } = useContext(AuthContext);
     if (isLoading) {
-        setTimeout(() => setIsLoading(false) , 1000) //to mimic checking for token in SecureStore
+        setTimeout(() => setIsLoading(false) , 1000)   
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Getting token...</Text>
-            <ActivityIndicator size="large" />
-            </View>
+            <Loader/>
         );
     } else {
         return (
