@@ -1,18 +1,17 @@
 import { View, Text, StyleSheet, Button, Alert, TextInput} from "react-native";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { getUser, patchUserProfile } from "../api";
+import { AuthContext } from '../Contexts/AuthContext';
 
 export default function EditProfile({navigation}) {
 
+const { userToken } = useContext(AuthContext)
 const [user, setUser] = useState({})
-//later replace this with logged in user context, currently hard coded in
-const username = "lovelyphotos"
-
-const editObject = {};
+const [editObject] = useState({})
 
 const handleUpdate = (e) => {
     e.preventDefault();
-    {patchUserProfile(editObject, username).then((res) => {
+    {patchUserProfile(editObject, userToken.username).then((res) => {
         Alert.alert("", "Profile updated.", [
             {
                 text: "ok",
@@ -26,10 +25,10 @@ const handleUpdate = (e) => {
 }
 
 useEffect(() => {
-    getUser(username).then((user) => {
+    getUser(userToken.username).then((user) => {
         setUser(user)
     })
-}, [username])
+}, [user])
         
     return (
         <View style = {styles.container}>
