@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
+import { ActivityIndicator, View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
 import { useState, useEffect, useContext } from 'react'
 import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
@@ -8,6 +8,7 @@ import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Loader from "./Loader";
 
 function Profile({ navigation }) {
 
@@ -23,9 +24,9 @@ const shareUser = async () => {
 
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
-const { userToken, setUserToken } = useContext(AuthContext);
+const { userToken, setUserToken } = useContext(AuthContext)
+const [isLoading, setIsLoading] = useState(true)
 
-//user is currently hard coded in
 useEffect(() => {
     getUser(userToken.username).then((user) => {
         setUser(user);
@@ -34,6 +35,13 @@ useEffect(() => {
         })
     })
 }, [])
+
+if (isLoading) {
+    setTimeout(() => setIsLoading(false), 1000)
+    return (
+        <Loader/>
+    );
+}
   
     return (
         <>
