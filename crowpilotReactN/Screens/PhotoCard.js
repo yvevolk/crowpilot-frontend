@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Dimensions} from 'react-native';
+import { StyleSheet, Image, Text, View, Dimensions, Button} from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
 
@@ -7,20 +7,24 @@ const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
-    return(
+    return (
+        <>
+        <Button 
+        title="view profile" 
+        onPress={()=>{
+            navigation.navigate("Profile", {
+                screen: 'ProfileScreen',
+                params: { otherUser: taken_by },
+            })
+            
+         }}
+        />
         <View key = {`${_id}`} style = {styles.singleCard}>
         <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
         <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
-        <Text 
-        onPress={()=>{
-           // console.log(taken_by)
-            navigation.navigate("Profile",{
-                taken_by: 'lovelyphotos'
-            })
-        }}
-        >{taken_by}</Text>
+        <Text>{taken_by}</Text>
         <Text style = {styles.header}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.header}>Route</Text>
@@ -33,6 +37,7 @@ const idealHW = (dimensions.width * 0.95);
 )}
         </View>
         </View>
+        </>
         )
 }
 
