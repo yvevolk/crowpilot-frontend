@@ -17,13 +17,12 @@ useEffect(() => {
  }, [photos])
 
     if (isLoading) {
-        setTimeout(() => setIsLoading(false) , 1000)
+        setTimeout(() => setIsLoading(false), 5000)
         return (
            <Loader/>
-        );
+        )
     }
-
-    return (
+    else {return (
         <View style={styles.container}>
             <ScrollView>
                 {photos.map((photo) => {
@@ -43,7 +42,7 @@ useEffect(() => {
                 })}
                 </ScrollView>
             </View>
-    );
+    )}
 }
 const styles = StyleSheet.create({
     container: {

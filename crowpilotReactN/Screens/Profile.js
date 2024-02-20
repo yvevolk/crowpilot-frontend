@@ -10,31 +10,36 @@ import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader";
 
-function Profile({ route, navigation}) {
+function Profile({ route, navigation }) {
 
 const [isLoading, setIsLoading] = useState(true)
 const { userToken } = useContext(AuthContext)
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
-    let username;
     
-if (route) {
-    const { otherUser } = route.params
-    username = otherUser
-} else {
-    username = userToken.username
-}
-
 useEffect(() => {
-    getUser(username)
-    .then((user) => {
-        setUser(user);
-        getUserPhotos(user.username)
-        .then((photos) => {
-            setUserPhotos(photos)
+        if (route.params === undefined) {
+        getUser(userToken.username).then((userData) => {
+            setUser(userData);
+            getUserPhotos(userData.username)
+            .then((userPhotos) => {
+                setUserPhotos(userPhotos);
+                setIsLoading(false)
+                
+            })
         })
-    })
-}, [])
+        }
+    else {
+        getUser(route.params.otherUser).then((userData) => {
+            setUser(userData);
+            getUserPhotos(userData.username)
+            .then((userPhotos) => {
+                setUserPhotos(userPhotos);
+                setIsLoading(false)
+            })
+        })
+        }
+}, [route.params, userToken])
     
 const shareUser = async () => {
     try {
@@ -45,16 +50,15 @@ const shareUser = async () => {
     } catch (err) {
         Alert.alert(err.message);
     }
-}
+}   
 
 if (isLoading) {
-    setTimeout(() => setIsLoading(false), 1000)
     return (
         <Loader/>
-    )
-}
-return (
-    <>
+    )}
+    else {
+        return (
+            <>
     <ScrollView>
     <View style = {styles.card}>
         <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
@@ -75,7 +79,9 @@ return (
         </View></View>
         </View>
     </View>
-    <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
+    {userToken.username === user.username && (
+ <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
+    )}
     <Button title = 'Share' onPress = {shareUser}></Button>
     <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
         {userPhotos.map((photo) => {
@@ -93,7 +99,8 @@ return (
         })}
     </ScrollView>
     </>
-)
+        )
+    }
 }
 
 const Stack = createNativeStackNavigator();

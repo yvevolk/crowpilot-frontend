@@ -9,22 +9,18 @@ const idealHW = (dimensions.width * 0.95);
 
     return (
         <>
-        <Button 
-        title="view profile" 
-        onPress={()=>{
-            navigation.navigate("Profile", {
-                screen: 'ProfileScreen',
-                params: { otherUser: taken_by },
-            })
-            
-         }}
-        />
         <View key = {`${_id}`} style = {styles.singleCard}>
         <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
         <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
-        <Text>{taken_by}</Text>
+        <Text  onPress={()=>{
+            navigation.navigate("Profile", {
+                screen: 'ProfileScreen',
+                params: { otherUser: taken_by},
+            })
+            
+         }}>{taken_by}</Text>
         <Text style = {styles.header}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.header}>Route</Text>
