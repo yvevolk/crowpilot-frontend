@@ -4,8 +4,18 @@ import { getAllPhotos } from '../api';
 import { ScrollView } from 'react-native-gesture-handler';
 import PhotoCard from './PhotoCard';
 import Loader from './Loader';
-
-export default function Timeline( {navigation} ) {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import UserProfile from './UserProfile'
+const Stack = createNativeStackNavigator();
+export default function TimelineNav() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="TimelineNav" component={Timeline} options={{headerShown:false}}/>
+            <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({title: route.params.taken_by })}/>
+        </Stack.Navigator>
+    )
+};
+function Timeline( {navigation} ) {
 
 const [photos, setPhotos] = useState([])
 const [isLoading, setIsLoading] = useState(true)
@@ -43,7 +53,7 @@ useEffect(() => {
                 </ScrollView>
             </View>
     )}
-}
+};
 const styles = StyleSheet.create({
     container: {
       flex: 1,

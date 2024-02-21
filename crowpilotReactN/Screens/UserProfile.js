@@ -1,24 +1,23 @@
 import { ActivityIndicator, View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
 import { useState, useEffect, useContext } from 'react'
-import { getUser, getUserPhotos } from "../api";
+import { getUser, getUserPhotos } from "../api.js";
 import moment from 'moment';
 import  RankCalc  from './RankCalc.js';
 import EditProfile from "./EditProfile.js";
-import SmallPhotoCard from "./SmallPhotoCard";
-import { AuthContext } from '../Contexts/AuthContext';
+import SmallPhotoCard from "./SmallPhotoCard.js";
+import { AuthContext } from '../Contexts/AuthContext.js';
 import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Loader from "./Loader";
-
-export default function OwnProfile({ navigation }) {
-
+import Loader from "./Loader.js";
+export default function UserProfile({ route, navigation }) {
+const { taken_by } = route.params;
 const [isLoading, setIsLoading] = useState(true)
 const { userToken } = useContext(AuthContext)
 const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
     
 useEffect(() => {
-        getUser(userToken.username).then((userData) => {
+        getUser(taken_by).then((userData) => {
             setUser(userData);
             getUserPhotos(userData.username)
             .then((userPhotos) => {
@@ -26,7 +25,7 @@ useEffect(() => {
                 setIsLoading(false)
             })
         })
-}, [userToken])
+}, [taken_by])
     
 const shareUser = async () => {
     try {

@@ -4,7 +4,7 @@ import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
 import  RankCalc  from './RankCalc.js';
 import EditProfile from "./EditProfile.js";
-import OwnProfile from './OwnProfile.js'
+import OwnProfile from './UserProfile.js'
 import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
