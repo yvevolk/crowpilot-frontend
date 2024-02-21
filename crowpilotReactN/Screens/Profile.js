@@ -13,92 +13,92 @@ import Loader from "./Loader";
 
 function Profile({ route, navigation }) {
 
-const [isLoading, setIsLoading] = useState(true)
-const { userToken } = useContext(AuthContext)
-const [user, setUser] = useState({})
-const [userPhotos, setUserPhotos] = useState([])
-    
-useEffect(() => {
-        // if (route.params === undefined) {
-        // getUser(userToken.username).then((userData) => {
-        //     setUser(userData);
-        //     getUserPhotos(userData.username)
-        //     .then((userPhotos) => {
-        //         setUserPhotos(userPhotos);
-        //         setIsLoading(false);                
-        //     })
-        // })
-        // }
-    // else {
-        getUser(route.params.otherUser).then((userData) => {
-            setUser(userData);
-            getUserPhotos(userData.username)
-            .then((userPhotos) => {
-                setUserPhotos(userPhotos);
-                setIsLoading(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const { userToken } = useContext(AuthContext)
+    const [user, setUser] = useState({})
+    const [userPhotos, setUserPhotos] = useState([])
+        
+    useEffect(() => {
+            // if (route.params === undefined) {
+            // getUser(userToken.username).then((userData) => {
+            //     setUser(userData);
+            //     getUserPhotos(userData.username)
+            //     .then((userPhotos) => {
+            //         setUserPhotos(userPhotos);
+            //         setIsLoading(false);                
+            //     })
+            // })
+            // }
+        // else {
+            getUser(route.params.taken_by).then((userData) => {
+                setUser(userData);
+                getUserPhotos(userData.username)
+                .then((userPhotos) => {
+                    setUserPhotos(userPhotos);
+                    setIsLoading(false)
+                })
             })
-        })
-        //}
-}, [route.params, userToken])
-    
-const shareUser = async () => {
-    try {
-        await Share.share({
-        message:
-            `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
-        });
-    } catch (err) {
-        Alert.alert(err.message);
-    }
-}   
+            //}
+    }, [route.params, userToken])
+        
+    const shareUser = async () => {
+        try {
+            await Share.share({
+            message:
+                `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
+            });
+        } catch (err) {
+            Alert.alert(err.message);
+        }
+    }   
 
-if (isLoading) {
-    return (
-        <Loader/>
-    )}
-    else {
+    if (isLoading) {
+        return <Loader/>
+    } else {
         return (
             <>
-    <ScrollView>
-    <View style = {styles.card}>
-        <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
-        <Text style = {styles.subtitle}>{user.username}</Text>
-        <View style = {styles.container}>
-        <View style = {styles.column}>
-        <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}></Image>
-        </View>
-        <View style = {styles.column}>
-            <View style = {styles.category}>
-        <Text style = {styles.header}>Member since</Text>
-        <Text>{moment(user.acc_created).format('MMM yyyy')}</Text></View>
-        <View style = {styles.category}>
-        <Text style = {styles.header}>Photos taken</Text>
-        <Text>{userPhotos.length}</Text></View>
-        <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
-        <RankCalc length = {userPhotos.length}></RankCalc>
-        </View></View>
-        </View>
-    </View>
-    {userToken.username === user.username && (
- <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
-    )}
-    <Button title = 'Share' onPress = {shareUser}></Button>
-    <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
-        {userPhotos.map((photo) => {
-            return (
-                <View key = {`${photo._id}`} style = {styles.singleCard}>
-                    <SmallPhotoCard
-                    photo_url = {photo.photo_url}
-                    taken_by = ""
-                    date_taken = {photo.date_taken}
-                    flight_origin={photo.flight_origin}
-                    flight_dest={photo.flight_dest}
-                    remarks = {photo.remarks}></SmallPhotoCard>
-                </View>
-            )
-        })}
-    </ScrollView>
-    </>
+                <ScrollView>
+                    <View style = {styles.card}>
+                        <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
+                        <Text style = {styles.subtitle}>{user.username}</Text>
+                        <View style = {styles.container}>
+                            <View style = {styles.column}>
+                                <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}/>
+                            </View>
+                            <View style = {styles.column}>
+                                <View style = {styles.category}>
+                                    <Text style = {styles.header}>Member since</Text>
+                                    <Text>{moment(user.acc_created).format('MMM yyyy')}</Text>
+                                </View>
+                                <View style = {styles.category}>
+                                    <Text style = {styles.header}>Photos taken</Text>
+                                    <Text>{userPhotos.length}</Text>
+                                </View>
+                                <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
+                                        <RankCalc length = {userPhotos.length}></RankCalc>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    {userToken.username === user.username && <Button title = 'Edit' onPress = {() => navigation.navigate("EditProfile")}></Button>}
+                    <Button title = 'Share' onPress = {shareUser}></Button>
+                    <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
+                    {userPhotos.map((photo) => {
+                        return (
+                            <View key = {`${photo._id}`} style = {styles.singleCard}>
+                                <SmallPhotoCard
+                                photo_url = {photo.photo_url}
+                                taken_by = ""
+                                date_taken = {photo.date_taken}
+                                flight_origin={photo.flight_origin}
+                                flight_dest={photo.flight_dest}
+                                remarks = {photo.remarks}
+                                />
+                            </View>
+                        )
+                    })}
+                </ScrollView>
+            </>
         )
     }
 }
@@ -117,7 +117,6 @@ export default function ProfileNav() {
           name="ProfileScreen"
           component={Profile}
           options= {{headerShown: false}}
-          initialParams = {{otherUser: 'hharr'}}
         />
         <Stack.Screen
           name="EditProfile"

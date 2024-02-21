@@ -18,10 +18,17 @@ const idealHW = (dimensions.width * 0.95);
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
         <Text  onPress={()=>{
-            navigation.navigate("Timeline", {
-                screen: 'UserProfile',
-                params: { taken_by},
-            })
+            if(taken_by===userToken.username) {
+                navigation.navigate("Profile", {
+                    screen: 'ProfileScreen',
+                    params: { taken_by},
+                })
+            } else {
+                navigation.navigate("Timeline", {
+                    screen: 'UserProfile',
+                    params: { taken_by},
+                })
+            }
         //}
             
          }}>{taken_by}</Text>
