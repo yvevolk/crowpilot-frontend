@@ -4,6 +4,7 @@ import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
 import  RankCalc  from './RankCalc.js';
 import EditProfile from "./EditProfile.js";
+import OwnProfile from './OwnProfile.js'
 import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,18 +19,17 @@ const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
     
 useEffect(() => {
-        if (route.params === undefined) {
-        getUser(userToken.username).then((userData) => {
-            setUser(userData);
-            getUserPhotos(userData.username)
-            .then((userPhotos) => {
-                setUserPhotos(userPhotos);
-                setIsLoading(false)
-                
-            })
-        })
-        }
-    else {
+        // if (route.params === undefined) {
+        // getUser(userToken.username).then((userData) => {
+        //     setUser(userData);
+        //     getUserPhotos(userData.username)
+        //     .then((userPhotos) => {
+        //         setUserPhotos(userPhotos);
+        //         setIsLoading(false);                
+        //     })
+        // })
+        // }
+    // else {
         getUser(route.params.otherUser).then((userData) => {
             setUser(userData);
             getUserPhotos(userData.username)
@@ -38,7 +38,7 @@ useEffect(() => {
                 setIsLoading(false)
             })
         })
-        }
+        //}
 }, [route.params, userToken])
     
 const shareUser = async () => {
@@ -108,16 +108,23 @@ const Stack = createNativeStackNavigator();
 export default function ProfileNav() {
     return (
       <Stack.Navigator>
+         {/* <Stack.Screen
+          name="OwnProfile"
+          component={OwnProfile}
+          options={{headerShown: false}}
+        /> */}
         <Stack.Screen
           name="ProfileScreen"
           component={Profile}
           options= {{headerShown: false}}
+          initialParams = {{otherUser: 'hharr'}}
         />
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
           options= {{headerShown: false}}
         />
+       
       </Stack.Navigator>
     );
   }

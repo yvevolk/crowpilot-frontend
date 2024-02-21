@@ -12,12 +12,12 @@ const [isLoading, setIsLoading] = useState(true)
 
 useEffect(() => {
     getAllPhotos().then((photos) => {
-        setPhotos(photos)
+        setPhotos(photos);
+        setIsLoading(false)
         })
  }, [photos])
 
     if (isLoading) {
-        setTimeout(() => setIsLoading(false), 5000)
         return (
            <Loader/>
         )
