@@ -7,7 +7,7 @@ import EditProfile from "./EditProfile.js";
 import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
-//import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader";
 
 export default function OwnProfile({ navigation }) {
