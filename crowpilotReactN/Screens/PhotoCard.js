@@ -1,9 +1,12 @@
 import { StyleSheet, Image, Text, View, Dimensions, Button} from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
+import { AuthContext } from '../Contexts/AuthContext';
+import { useContext } from 'react';
 
 const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, navigation }) => {
 
+const { userToken } = useContext(AuthContext)
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
@@ -15,10 +18,17 @@ const idealHW = (dimensions.width * 0.95);
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
         <Text  onPress={()=>{
+            // if (taken_by === userToken.username){
+            //     navigation.navigate("Profile", {
+            //         screen: 'OwnProfileScreen'
+            //     })
+            // }
+            //else { 
             navigation.navigate("Profile", {
                 screen: 'ProfileScreen',
                 params: { otherUser: taken_by},
             })
+        //}
             
          }}>{taken_by}</Text>
         <Text style = {styles.header}>Date</Text>

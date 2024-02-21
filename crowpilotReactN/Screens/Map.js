@@ -18,19 +18,18 @@ const [photos, setPhotos] = useState([]);
 useEffect(() => {
     getAllPhotos().then((photos) => {
         setPhotos(photos)
+        setIsLoading(false)
     }),
     [photos]
 })
 
 if (isLoading) {
-    setTimeout(() => setIsLoading(false))
-    return (
+       return (
         <Loader/>
     );
 }
-
     return (
-        <View>
+    <View>
     <MapView
       provider = {PROVIDER_GOOGLE}
       style={styles.map}
