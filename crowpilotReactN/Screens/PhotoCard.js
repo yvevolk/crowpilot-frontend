@@ -1,12 +1,9 @@
-import { StyleSheet, Image, Text, View, Dimensions, Button} from 'react-native';
+import { StyleSheet, Image, Text, View, Dimensions } from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
-import { AuthContext } from '../Contexts/AuthContext';
-import { useContext } from 'react';
 
 const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, navigation }) => {
 
-const { userToken } = useContext(AuthContext)
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
@@ -17,13 +14,11 @@ const idealHW = (dimensions.width * 0.95);
         <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
         <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
-        <Text  onPress={()=>{
+        <Text onPress={()=>{
             navigation.navigate("Timeline", {
                 screen: 'UserProfile',
-                params: { taken_by},
-            })
-        //}
-            
+                params: { taken_by }
+            }) 
          }}>{taken_by}</Text>
         <Text style = {styles.header}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
