@@ -39,11 +39,9 @@ const shareUser = async () => {
     }
 }   
 
-if (isLoading) {
-    return (
-        <Loader/>
-    )}
-    else {
+    if (isLoading) {
+        return <Loader/>
+    } else {
         return (
             <>
     <ScrollView>
