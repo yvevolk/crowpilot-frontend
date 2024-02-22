@@ -1,17 +1,16 @@
-import { ActivityIndicator, View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
+import { View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
 import { useState, useEffect, useContext } from 'react'
 import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
 import  RankCalc  from './RankCalc.js';
 import EditProfile from "./EditProfile.js";
-import OwnProfile from './UserProfile.js'
 import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader";
 
-function Profile({ route, navigation }) {
+function Profile({ navigation }) {
 
 const [isLoading, setIsLoading] = useState(true)
 const { userToken } = useContext(AuthContext)
@@ -19,18 +18,7 @@ const [user, setUser] = useState({})
 const [userPhotos, setUserPhotos] = useState([])
     
 useEffect(() => {
-        // if (route.params === undefined) {
-        // getUser(userToken.username).then((userData) => {
-        //     setUser(userData);
-        //     getUserPhotos(userData.username)
-        //     .then((userPhotos) => {
-        //         setUserPhotos(userPhotos);
-        //         setIsLoading(false);                
-        //     })
-        // })
-        // }
-    // else {
-        getUser(route.params.otherUser).then((userData) => {
+        getUser(userToken.username).then((userData) => {
             setUser(userData);
             getUserPhotos(userData.username)
             .then((userPhotos) => {
@@ -38,8 +26,7 @@ useEffect(() => {
                 setIsLoading(false)
             })
         })
-        //}
-}, [route.params, userToken])
+}, [userToken])
     
 const shareUser = async () => {
     try {
@@ -80,7 +67,7 @@ if (isLoading) {
         </View>
     </View>
     {userToken.username === user.username && (
- <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
+ <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}/>
     )}
     <Button title = 'Share' onPress = {shareUser}></Button>
     <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
@@ -93,7 +80,8 @@ if (isLoading) {
                     date_taken = {photo.date_taken}
                     flight_origin={photo.flight_origin}
                     flight_dest={photo.flight_dest}
-                    remarks = {photo.remarks}></SmallPhotoCard>
+                    remarks = {photo.remarks}
+                    />
                 </View>
             )
         })}
@@ -108,23 +96,16 @@ const Stack = createNativeStackNavigator();
 export default function ProfileNav() {
     return (
       <Stack.Navigator>
-         {/* <Stack.Screen
-          name="OwnProfile"
-          component={OwnProfile}
-          options={{headerShown: false}}
-        /> */}
         <Stack.Screen
           name="ProfileScreen"
           component={Profile}
           options= {{headerShown: false}}
-          initialParams = {{otherUser: 'hharr'}}
         />
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
           options= {{headerShown: false}}
         />
-       
       </Stack.Navigator>
     );
   }

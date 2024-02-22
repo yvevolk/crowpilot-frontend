@@ -1,10 +1,13 @@
-import { StyleSheet, Image, Text, View, Dimensions} from 'react-native';
+import { StyleSheet, Image, Text, View, Dimensions } from 'react-native';
 'react-native-gesture-handler';
 import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
-const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks}) => {
+const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, setVisible }) => {
+
+const navigation = useNavigation()
 
     return(<>
         <View key = {`${_id}`} style = {styles.singleCard}>
@@ -19,7 +22,13 @@ const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, fl
         {taken_by && (
         <View>
             <Text style = {styles.heading}>Passenger</Text>
-            <Text>{taken_by}</Text>
+            <Text onPress = {() => {
+                setVisible(false);
+                navigation.navigate("Map", {
+                    screen: 'MapProfileScreen',
+                    params: { taken_by }
+                })
+            }}>{taken_by}</Text>
         </View>
         )}
         <Text style = {styles.heading}>Date</Text>

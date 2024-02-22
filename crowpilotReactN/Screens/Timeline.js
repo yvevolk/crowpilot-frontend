@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Button, Dimensions} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useState, useEffect } from 'react'
 import { getAllPhotos } from '../api';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -7,14 +7,17 @@ import Loader from './Loader';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UserProfile from './UserProfile'
 const Stack = createNativeStackNavigator();
+
 export default function TimelineNav() {
+
     return (
         <Stack.Navigator>
             <Stack.Screen name="TimelineNav" component={Timeline} options={{headerShown:false}}/>
-            <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({title: route.params.taken_by })}/>
+            <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }}/>
         </Stack.Navigator>
     )
 };
+
 function Timeline( {navigation} ) {
 
 const [photos, setPhotos] = useState([])
@@ -32,7 +35,8 @@ useEffect(() => {
            <Loader/>
         )
     }
-    else {return (
+    else {
+        return (
         <View style={styles.container}>
             <ScrollView>
                 {photos.map((photo) => {
