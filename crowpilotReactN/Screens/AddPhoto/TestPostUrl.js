@@ -8,7 +8,7 @@ const date = new Date()
 const year = date.getFullYear()
 const month = (date.getMonth() + 1).toString().length !== 2 ? `0${(date.getMonth() + 1).toString()}` : date.getMonth() + 1
 const day = (date.getDate() + 1).toString().length !== 2 ? `0${(date.getDate() + 1).toString()}` : date.getDate() + 1
-console.log(year);
+
 export default function TestPostUrl({ route, navigation }) {
     const [confirmInfo, setConfirmInfo] = useState({
         lat: {

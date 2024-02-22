@@ -1,18 +1,36 @@
-import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import  MapView, { Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { useState, useEffect } from 'react'
 import { getAllPhotos } from '../api'
 import { Overlay } from '@rneui/themed';
 import SmallPhotoCard from './SmallPhotoCard';
 import Loader from './Loader'
+import UserProfile from './UserProfile';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function Map() {
+const Stack = createNativeStackNavigator();
+
+export default function MapNav () {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name = "MapScreen"
+                component = {Map}
+                options = {{headerShown: false}}/>
+            <Stack.Screen
+                name = "MapProfileScreen"
+                component = {UserProfile}
+                options = {{headerShown: false}}/>
+        </Stack.Navigator>
+    )
+}
+
+function Map() {
 
 const [isLoading, setIsLoading] = useState(true)
 const [visible, setVisible] = useState(false);
 const [overlayData, setOverlayData] = useState({})
 const toggleOverlay = () => {setVisible(!visible)};
-
 
 const [photos, setPhotos] = useState([]);
 useEffect(() => {
@@ -60,7 +78,9 @@ if (isLoading) {
                         date_taken = {overlayData.date_taken}
                         flight_origin={overlayData.flight_origin}
                         flight_dest={overlayData.flight_dest}
-                        remarks = {overlayData.remarks}></SmallPhotoCard>
+                        remarks = {overlayData.remarks}
+                        setVisible = {setVisible}
+                        />
                 </Overlay>
                 </Marker>
                     )

@@ -1,104 +1,90 @@
-import { ActivityIndicator, View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
+import { View, Text, Image, StyleSheet, Button, Alert, Share } from "react-native";
 import { useState, useEffect, useContext } from 'react'
 import { getUser, getUserPhotos } from "../api";
 import moment from 'moment';
 import  RankCalc  from './RankCalc.js';
 import EditProfile from "./EditProfile.js";
-import OwnProfile from './UserProfile.js'
 import SmallPhotoCard from "./SmallPhotoCard";
 import { AuthContext } from '../Contexts/AuthContext';
 import { ScrollView } from "react-native-gesture-handler";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader";
 
-function Profile({ route, navigation }) {
+function Profile({ navigation }) {
 
-    const [isLoading, setIsLoading] = useState(true)
-    const { userToken } = useContext(AuthContext)
-    const [user, setUser] = useState({})
-    const [userPhotos, setUserPhotos] = useState([])
-        
-    useEffect(() => {
-            // if (route.params === undefined) {
-            // getUser(userToken.username).then((userData) => {
-            //     setUser(userData);
-            //     getUserPhotos(userData.username)
-            //     .then((userPhotos) => {
-            //         setUserPhotos(userPhotos);
-            //         setIsLoading(false);                
-            //     })
-            // })
-            // }
-        // else {
-            getUser(route.params.taken_by).then((userData) => {
-                setUser(userData);
-                getUserPhotos(userData.username)
-                .then((userPhotos) => {
-                    setUserPhotos(userPhotos);
-                    setIsLoading(false)
-                })
+const [isLoading, setIsLoading] = useState(true)
+const { userToken } = useContext(AuthContext)
+const [user, setUser] = useState({})
+const [userPhotos, setUserPhotos] = useState([])
+    
+useEffect(() => {
+        getUser(userToken.username).then((userData) => {
+            setUser(userData);
+            getUserPhotos(userData.username)
+            .then((userPhotos) => {
+                setUserPhotos(userPhotos);
+                setIsLoading(false)
             })
-            //}
-    }, [route.params, userToken])
-        
-    const shareUser = async () => {
-        try {
-            await Share.share({
-            message:
-                `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
-            });
-        } catch (err) {
-            Alert.alert(err.message);
-        }
-    }   
+        })
+}, [userToken])
+    
+const shareUser = async () => {
+    try {
+        await Share.share({
+        message:
+            `Check out ${user.username} on Crowpilot, the app that changes your perspective!`
+        });
+    } catch (err) {
+        Alert.alert(err.message);
+    }
+}   
 
     if (isLoading) {
         return <Loader/>
     } else {
         return (
             <>
-                <ScrollView>
-                    <View style = {styles.card}>
-                        <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
-                        <Text style = {styles.subtitle}>{user.username}</Text>
-                        <View style = {styles.container}>
-                            <View style = {styles.column}>
-                                <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}/>
-                            </View>
-                            <View style = {styles.column}>
-                                <View style = {styles.category}>
-                                    <Text style = {styles.header}>Member since</Text>
-                                    <Text>{moment(user.acc_created).format('MMM yyyy')}</Text>
-                                </View>
-                                <View style = {styles.category}>
-                                    <Text style = {styles.header}>Photos taken</Text>
-                                    <Text>{userPhotos.length}</Text>
-                                </View>
-                                <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
-                                        <RankCalc length = {userPhotos.length}></RankCalc>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    {userToken.username === user.username && <Button title = 'Edit' onPress = {() => navigation.navigate("EditProfile")}></Button>}
-                    <Button title = 'Share' onPress = {shareUser}></Button>
-                    <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
-                    {userPhotos.map((photo) => {
-                        return (
-                            <View key = {`${photo._id}`} style = {styles.singleCard}>
-                                <SmallPhotoCard
-                                photo_url = {photo.photo_url}
-                                taken_by = ""
-                                date_taken = {photo.date_taken}
-                                flight_origin={photo.flight_origin}
-                                flight_dest={photo.flight_dest}
-                                remarks = {photo.remarks}
-                                />
-                            </View>
-                        )
-                    })}
-                </ScrollView>
-            </>
+    <ScrollView>
+    <View style = {styles.card}>
+        <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
+        <Text style = {styles.subtitle}>{user.username}</Text>
+        <View style = {styles.container}>
+        <View style = {styles.column}>
+        <Image style = {styles.profilePic} source={{uri: `${user.avatar_url}`}}></Image>
+        </View>
+        <View style = {styles.column}>
+            <View style = {styles.category}>
+        <Text style = {styles.header}>Member since</Text>
+        <Text>{moment(user.acc_created).format('MMM yyyy')}</Text></View>
+        <View style = {styles.category}>
+        <Text style = {styles.header}>Photos taken</Text>
+        <Text>{userPhotos.length}</Text></View>
+        <View style = {styles.category}><Text style = {styles.header}>Crowpilot Rank</Text>
+        <RankCalc length = {userPhotos.length}></RankCalc>
+        </View></View>
+        </View>
+    </View>
+    {userToken.username === user.username && (
+ <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}/>
+    )}
+    <Button title = 'Share' onPress = {shareUser}></Button>
+    <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
+        {userPhotos.map((photo) => {
+            return (
+                <View key = {`${photo._id}`} style = {styles.singleCard}>
+                    <SmallPhotoCard
+                    photo_url = {photo.photo_url}
+                    taken_by = ""
+                    date_taken = {photo.date_taken}
+                    flight_origin={photo.flight_origin}
+                    flight_dest={photo.flight_dest}
+                    remarks = {photo.remarks}
+                    />
+                </View>
+            )
+        })}
+    </ScrollView>
+    </>
         )
     }
 }
@@ -108,11 +94,6 @@ const Stack = createNativeStackNavigator();
 export default function ProfileNav() {
     return (
       <Stack.Navigator>
-         {/* <Stack.Screen
-          name="OwnProfile"
-          component={OwnProfile}
-          options={{headerShown: false}}
-        /> */}
         <Stack.Screen
           name="ProfileScreen"
           component={Profile}
@@ -123,7 +104,6 @@ export default function ProfileNav() {
           component={EditProfile}
           options= {{headerShown: false}}
         />
-       
       </Stack.Navigator>
     );
   }

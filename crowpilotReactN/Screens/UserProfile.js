@@ -7,7 +7,6 @@ import EditProfile from "./EditProfile.js";
 import SmallPhotoCard from "./SmallPhotoCard.js";
 import { AuthContext } from '../Contexts/AuthContext.js';
 import { ScrollView } from "react-native-gesture-handler";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Loader from "./Loader.js";
 export default function UserProfile({ route, navigation }) {
 const { taken_by } = route.params;
@@ -47,7 +46,6 @@ if (isLoading) {
             <>
     <ScrollView>
     <View style = {styles.card}>
-        <Text>THIS IS OWN PROFILE!</Text>
         <Text style = {styles.name}>{user.firstname} {user.surname}</Text>
         <Text style = {styles.subtitle}>{user.username}</Text>
         <View style = {styles.container}>
@@ -67,9 +65,9 @@ if (isLoading) {
         </View>
     </View>
     {userToken.username === user.username && (
- <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}></Button>
+ <Button title = 'Edit' onPress = {() => {navigation.navigate("EditProfile")}}/>
     )}
-    <Button title = 'Share' onPress = {shareUser}></Button>
+    <Button title = 'Share' onPress = {shareUser}/>
     <Text style = {styles.userPhotoTitle} >{user.username}'s photos</Text>
         {userPhotos.map((photo) => {
             return (
@@ -80,7 +78,7 @@ if (isLoading) {
                     date_taken = {photo.date_taken}
                     flight_origin={photo.flight_origin}
                     flight_dest={photo.flight_dest}
-                    remarks = {photo.remarks}></SmallPhotoCard>
+                    remarks = {photo.remarks}/>
                 </View>
             )
         })}
@@ -89,25 +87,6 @@ if (isLoading) {
         )
     }
 }
-
-//const Stack = createNativeStackNavigator();
-
-// export default function ProfileNav() {
-//     return (
-//       <Stack.Navigator>
-//         <Stack.Screen
-//           name="ProfileScreen"
-//           component={Profile}
-//           options= {{headerShown: false}}
-//         />
-//         <Stack.Screen
-//           name="EditProfile"
-//           component={EditProfile}
-//           options= {{headerShown: false}}
-//         />
-//       </Stack.Navigator>
-//     );
-//   }
 
 const styles = StyleSheet.create({
     card: {
