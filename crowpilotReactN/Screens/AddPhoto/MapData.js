@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import {airports} from '../../Coordinates/Airports'
 import { Button, Text, TextInput, View } from 'react-native'
-import {getC, getFraction, intermediatePoint} from '../../Coordinates/Haversine'
+import { getC, getFraction, intermediatePoint } from '../../Coordinates/Haversine'
+import axios from 'axios'
 export default function MapData() {
     const [origCode, setOrigCode] = useState("none")
     const [destCode, setDestCode] = useState("none")
@@ -10,11 +11,13 @@ export default function MapData() {
     const [photoTime, setPhotoTime] = useState("none")
     const [coordinates, setCoordinates] = useState(null)
 
-    function handleCalc() {
-        const c =  getC(airports[origCode], airports[destCode])
-        const fraction = getFraction(photoTime, depTime, arrTime)
-        const coord = intermediatePoint(c, airports[origCode], airports[destCode], fraction)
-        setCoordinates(coord)
+    async function handleCalc() {
+        const data = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${origCode.toUpperCase()}%22&limit=20`)
+        console.log(data.data.results[0].coordinates.lat, data.data.results[0].coordinates.lon);
+        // const c =  getC(airports[origCode], airports[destCode])
+        // const fraction = getFraction(photoTime, depTime, arrTime)
+        // const coord = intermediatePoint(c, airports[origCode], airports[destCode], fraction)
+        // setCoordinates(coord)
     }
     return (
     <View>
