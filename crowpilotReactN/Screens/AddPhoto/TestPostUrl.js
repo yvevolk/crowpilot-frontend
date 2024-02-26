@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions } from 're
 import axios from "axios"
 import { useContext } from 'react';
 import { AuthContext } from '../../Contexts/AuthContext';
+import {airports} from '../../Coordinates/Airports'
+import {getC, getFraction, intermediatePoint} from '../../Coordinates/Haversine'
 const dimensions = Dimensions.get('window')
 const date = new Date()
 const year = date.getFullYear()
@@ -10,15 +12,13 @@ const month = (date.getMonth() + 1).toString().length !== 2 ? `0${(date.getMonth
 const day = (date.getDate() + 1).toString().length !== 2 ? `0${(date.getDate() + 1).toString()}` : date.getDate() + 1
 
 export default function TestPostUrl({ route, navigation }) {
+    const [origCode, setOrigCode] = useState("none")
+    const [destCode, setDestCode] = useState("none")
+    const [depTime, setDepTime] = useState("none")
+    const [arrTime, setArrTime] = useState("none")
+    const [photoTime, setPhotoTime] = useState("none")
+    const [coordinates, setCoordinates] = useState(["none","none"])
     const [confirmInfo, setConfirmInfo] = useState({
-        lat: {
-            state: null,
-            value: 45.009133
-        },
-        long: {
-            state: null,
-            value: -1.000050
-        },
         type: {
             state: null,
             value: "air"
@@ -31,14 +31,6 @@ export default function TestPostUrl({ route, navigation }) {
             state: null,
             value: "BA663"
         },
-        origin: {
-            state: null,
-            value: "LHR"
-        },
-        dest: {
-            state: null,
-            value: "WMI"
-        },
         remarks: {
             state: null,
             value: ""
@@ -47,21 +39,28 @@ export default function TestPostUrl({ route, navigation }) {
     const { userToken } = useContext(AuthContext)
     const { photo_url } = route.params
     let data = {
-        location: {
-            lat: confirmInfo.lat.value,
-            long: confirmInfo.long.value
-        },
         photo_url,
         taken_by: userToken.username,
         photo_type: confirmInfo.type.value,
         date_taken: confirmInfo.date.value,
         flight_code: confirmInfo.code.value,
-        flight_origin: confirmInfo.origin.value,
-        flight_dest: confirmInfo.dest.value,
+        flight_origin: origCode,
+        flight_dest: destCode,
         remarks: confirmInfo.remarks.value
     }
-    const handlePost = () => {
-        axios.post("https://crowpilot.onrender.com/api/photos", data)
+    const handlePost = async () => {
+        const c =  getC(airports[origCode], airports[destCode])
+        const fraction = getFraction(photoTime, depTime, arrTime)
+        const coord = intermediatePoint(c, airports[origCode], airports[destCode], fraction)
+        const numbersCoord = coord.map(str => +str)
+        setCoordinates(numbersCoord)
+        console.log(coordinates[0], typeof coordinates[0]);
+        if (coordinates != ["none", "none"]) {
+            data.location = {
+                lat: coordinates[0].toFixed(6),
+                long: coordinates[1].toFixed(6)
+            }
+            axios.post("https://crowpilot.onrender.com/api/photos", data)
             .then(response => {
                 Alert.alert("", "Photo has been submitted successfully.", [
                     {
@@ -79,10 +78,12 @@ export default function TestPostUrl({ route, navigation }) {
                 }
             ])
           });
+        }
         
     }
     return (
         <View style={styles.container}>
+            
             <Text
                 style={{fontSize:20, fontWeight:100}}
             >
@@ -90,74 +91,68 @@ export default function TestPostUrl({ route, navigation }) {
             </Text>
             <Text>Photo URL</Text>
             <Text>{photo_url}</Text>
-            {/* Location */}
+            {/* Flight Code */}
             <>
-                <Text>Location</Text>
                 <View style={{
-                    width: dimensions.width*0.8,
+                    width: dimensions.width,
                     flexDirection: 'row',
+                    
                 }}>
                     {
-                        confirmInfo.lat.state === null &&
+                        confirmInfo.code.state === null &&
                         <>
-                            <Text>lat: {confirmInfo.lat.value}</Text>
-                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, lat: { state: true, value: confirmInfo.lat.value }})} />
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, lat: { state: false, value: confirmInfo.lat.value } })} />
+                            <Text>code: {confirmInfo.code.value}</Text>
+                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, code: { state: true, value: confirmInfo.code.value }})} />
+                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, code: { state: false, value: confirmInfo.code.value } })} />
                         </>
                     }
                     {
-                        confirmInfo.lat.state === false &&
+                        confirmInfo.code.state === false &&
                         <>
-                            <Text>lat:</Text>
-                            <TextInput value={confirmInfo.lat.value.toString()} onChangeText={(e) => {
-                                setConfirmInfo({...confirmInfo, lat: { state: false, value: e }})
+                            <Text>code:</Text>
+                            <TextInput value={confirmInfo.code.value.toString()} onChangeText={(e) => {
+                                setConfirmInfo({...confirmInfo, code: { state: false, value: e }})
                             }} />
                             <Button style={styles.button} title="ok" onPress={() => {
-                                setConfirmInfo({ ...confirmInfo, lat: { state: true, value: confirmInfo.lat.value } })
+                                setConfirmInfo({ ...confirmInfo, code: { state: true, value: confirmInfo.code.value } })
                             }} />
                         </>
                     }
                     {
-                        confirmInfo.lat.state === true &&
+                        confirmInfo.code.state === true &&
                         <>
-                            <Text>lat: {confirmInfo.lat.value}</Text>
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, lat: { state: false, value: confirmInfo.lat.value }})}/>
-                        </>
-                    }
-                </View>
-                <View style={{
-                    width: dimensions.width*0.8,
-                    flexDirection: 'row',
-                }}>
-                    {
-                        confirmInfo.long.state === null &&
-                        <>
-                            <Text>long: {confirmInfo.long.value}</Text>
-                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, long: { state: true, value: confirmInfo.long.value }})} />
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, long: { state: false, value: confirmInfo.long.value } })} />
-                        </>
-                    }
-                    {
-                        confirmInfo.long.state === false &&
-                        <>
-                            <Text>long:</Text>
-                            <TextInput value={confirmInfo.long.value.toString()} onChangeText={(e) => {
-                                setConfirmInfo({...confirmInfo, long: { state: false, value: e }})
-                            }} />
-                            <Button style={styles.button} title="ok" onPress={() => {
-                                setConfirmInfo({ ...confirmInfo, long: { state: true, value: confirmInfo.long.value } })
-                            }} />
-                        </>
-                    }
-                    {
-                        confirmInfo.long.state === true &&
-                        <>
-                            <Text>long: {confirmInfo.long.value}</Text>
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, long: { state: false, value: confirmInfo.long.value }})}/>
+                            <Text>code: {confirmInfo.code.value}</Text>
+                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, code: { state: false, value: confirmInfo.code.value }})}/>
                         </>
                     }
                 </View>
             </>
+            <Text>Origin code:</Text>
+            <TextInput placeholder="ORIGIN ICAO" onChangeText={(e) => {
+                console.log(e);
+                setOrigCode(e)
+            }} />
+        <Text>Destination code:</Text>
+            <TextInput placeholder="DESTINATION ICAO" onChangeText={(e) => {
+                console.log(e);
+                setDestCode(e)
+            }} />
+        <Text>Time of Departure: </Text>
+            <TextInput placeholder="24-hour format" onChangeText={(e) => {
+                console.log(e);
+                setDepTime(e)
+            }} />
+        <Text>Time of Arrival:</Text>
+            <TextInput placeholder="24-hour format" onChangeText={(e) => {
+                console.log(e);
+                setArrTime(e)
+            }} />
+        <Text>Time of Photo:</Text>
+            <TextInput placeholder="24-hour format" onChangeText={(e) => {
+                console.log(e);
+                setPhotoTime(e)
+            }} />
+            
             {/* Date */}
             <>
                 <View style={{
@@ -230,114 +225,7 @@ export default function TestPostUrl({ route, navigation }) {
                     }
                 </View>
             </>
-            {/* Flight Code */}
-            <>
-                <View style={{
-                    width: dimensions.width,
-                    flexDirection: 'row',
-                    
-                }}>
-                    {
-                        confirmInfo.code.state === null &&
-                        <>
-                            <Text>code: {confirmInfo.code.value}</Text>
-                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, code: { state: true, value: confirmInfo.code.value }})} />
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, code: { state: false, value: confirmInfo.code.value } })} />
-                        </>
-                    }
-                    {
-                        confirmInfo.code.state === false &&
-                        <>
-                            <Text>code:</Text>
-                            <TextInput value={confirmInfo.code.value.toString()} onChangeText={(e) => {
-                                setConfirmInfo({...confirmInfo, code: { state: false, value: e }})
-                            }} />
-                            <Button style={styles.button} title="ok" onPress={() => {
-                                setConfirmInfo({ ...confirmInfo, code: { state: true, value: confirmInfo.code.value } })
-                            }} />
-                        </>
-                    }
-                    {
-                        confirmInfo.code.state === true &&
-                        <>
-                            <Text>code: {confirmInfo.code.value}</Text>
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, code: { state: false, value: confirmInfo.code.value }})}/>
-                        </>
-                    }
-                </View>
-            </>
-            {/* Flight Origin */}
-            <>
-                <View style={{
-                    width: dimensions.width,
-                    flexDirection: 'row',
-                    
-                }}>
-                    {
-                        confirmInfo.origin.state === null &&
-                        <>
-                            <Text>origin: {confirmInfo.origin.value}</Text>
-                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, origin: { state: true, value: confirmInfo.origin.value }})} />
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, origin: { state: false, value: confirmInfo.origin.value } })} />
-                        </>
-                    }
-                    {
-                        confirmInfo.origin.state === false &&
-                        <>
-                            <Text>origin:</Text>
-                            <TextInput value={confirmInfo.origin.value.toString()} onChangeText={(e) => {
-                                setConfirmInfo({...confirmInfo, origin: { state: false, value: e }})
-                            }} />
-                            <Button style={styles.button} title="ok" onPress={() => {
-                                setConfirmInfo({ ...confirmInfo, origin: { state: true, value: confirmInfo.origin.value } })
-                            }} />
-                        </>
-                    }
-                    {
-                        confirmInfo.origin.state === true &&
-                        <>
-                            <Text>origin: {confirmInfo.origin.value}</Text>
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, origin: { state: false, value: confirmInfo.origin.value }})}/>
-                        </>
-                    }
-                </View>
-            </>
-            {/* Flight Dest */}
-            <>
-                <View style={{
-                    width: dimensions.width,
-                    flexDirection: 'row',
-                    
-                }}>
-                    {
-                        confirmInfo.dest.state === null &&
-                        <>
-                            <Text>dest: {confirmInfo.dest.value}</Text>
-                            <Button style={styles.button} title="ok" onPress={() => setConfirmInfo({...confirmInfo, dest: { state: true, value: confirmInfo.dest.value }})} />
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({ ...confirmInfo, dest: { state: false, value: confirmInfo.dest.value } })} />
-                        </>
-                    }
-                    {
-                        confirmInfo.dest.state === false &&
-                        <>
-                            <Text>dest:</Text>
-                            <TextInput value={confirmInfo.dest.value.toString()} onChangeText={(e) => {
-                                setConfirmInfo({...confirmInfo, dest: { state: false, value: e }})
-                            }} />
-                            <Button style={styles.button} title="ok" onPress={() => {
-                                setConfirmInfo({ ...confirmInfo, dest: { state: true, value: confirmInfo.dest.value } })
-                            }} />
-                        </>
-                    }
-                    {
-                        confirmInfo.dest.state === true &&
-                        <>
-                            <Text>dest: {confirmInfo.dest.value}</Text>
-                            <Button style={styles.button} title="edit" onPress={() => setConfirmInfo({...confirmInfo, dest: { state: false, value: confirmInfo.dest.value }})}/>
-                        </>
-                    }
-                </View>
-            </>
+            
             {/* Remarks */}
             <>
                 <View style={{
