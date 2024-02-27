@@ -6,6 +6,7 @@ import PhotoCard from './PhotoCard';
 import Loader from './Loader';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UserProfile from './UserProfile'
+
 const Stack = createNativeStackNavigator();
 
 export default function TimelineNav() {
@@ -39,7 +40,7 @@ useEffect(() => {
         return (
         <View style={styles.container}>
             <ScrollView>
-                {photos.map((photo) => {
+                 {photos.map((photo) => {
                     return(
                     <View key = {`${photo._id}`} style = {styles.singleCard}>
                         <PhotoCard

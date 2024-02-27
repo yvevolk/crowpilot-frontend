@@ -1,18 +1,38 @@
-import { StyleSheet, Image, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Image, Text, View, Dimensions, TouchableOpacity, Modal, Button } from 'react-native';
 'react-native-gesture-handler';
+import { useState } from 'react';
 import moment from 'moment';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, navigation }) => {
 
-const dimensions = Dimensions.get('window')
+const [showModal, setShowModal] = useState(false);
+const toggleModal = () => {setShowModal(!showModal)};
+    
+
+const dimensions = Dimensions.get('screen')
 const idealHW = (dimensions.width * 0.95);
 
     return (
         <>
         <View key = {`${_id}`} style = {styles.singleCard}>
-        <View><Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
-        <Image style = {{"height": idealHW, "width": idealHW,"resizeMode": "cover","borderRadius": 20}} source={{uri: `${photo_url}`}}></Image>
-        <View className = 'text-section' style = {styles.textSection}>
+        <View>
+            <Text style = {styles.postedWhen}>{moment(date_taken).fromNow()}</Text></View>
+            <TouchableOpacity onPress={toggleModal}>
+                <Image style = {{height: idealHW, width: idealHW,resizeMode: "cover", borderRadius: 20}} source={{uri: `${photo_url}`}}/>
+            </TouchableOpacity>
+            <Modal transparent = {true} visible = {showModal} animationType='fade' >
+                <View style = {styles.modalContainer}>
+                <ReactNativeZoomableView
+                minZoom = {0.5}
+                maxZoom = {5}
+                >
+            <Image source = {{uri: photo_url}} style = {{height: dimensions.height, width: dimensions.height}} resizeMode='contain'/>
+            </ReactNativeZoomableView>
+            <Button title = "Close" onPress={toggleModal}/>
+            </View>
+            </Modal>
+       <View className = 'text-section' style = {styles.textSection}>
         <Text style = {styles.header}>Passenger</Text>
         <Text onPress={()=>{
             navigation.navigate("Timeline", {
@@ -73,6 +93,10 @@ const styles = StyleSheet.create({
     singleCol: {
         flex: 1
     },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)'
+    }
   });
 
 export default PhotoCard;

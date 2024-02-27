@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
-const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, setVisible }) => {
+const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks }) => {
 
 const navigation = useNavigation()
 
