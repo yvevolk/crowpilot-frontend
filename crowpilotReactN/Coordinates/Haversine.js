@@ -1,4 +1,3 @@
-const airports = require('./Airports.js')
 function toRad(x) {
     return x * Math.PI / 180;
 }
