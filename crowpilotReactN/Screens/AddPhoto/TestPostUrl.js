@@ -16,7 +16,7 @@ export default function TestPostUrl({ route, navigation }) {
     const [depTime, setDepTime] = useState("none")
     const [arrTime, setArrTime] = useState("none")
     const [photoTime, setPhotoTime] = useState("none")
-    const [coordinates, setCoordinates] = useState(["none","none"])
+    const [coordinates, setCoordinates] = useState([-30,0])
     const [confirmInfo, setConfirmInfo] = useState({
         type: {
             state: null,
@@ -54,31 +54,30 @@ export default function TestPostUrl({ route, navigation }) {
         const fraction = getFraction(photoTime, depTime, arrTime)
         const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
         setCoordinates(coord)
-        console.log(coordinates[0], typeof coordinates[0]);
-        if (coordinates != ["none", "none"]) {
-            data.location = {
-                lat: coordinates[0].toFixed(6),
-                long: coordinates[1].toFixed(6)
-            }
-            axios.post("https://crowpilot.onrender.com/api/photos", data)
-            .then(response => {
-                Alert.alert("", "Photo has been submitted successfully.", [
-                    {
-                        text: "Roger.",
-                        onPress: navigation.navigate("Timeline")
-                    }
-                ])
-          })
-          .catch(error => {
-              console.error("Error fetching data: ", error);
-              Alert.alert("", `${error}`, [
+        console.log(coord, typeof coordinates[0]);
+        data.location = {
+            lat: coordinates[0].toFixed(6),
+            long: coordinates[1].toFixed(6)
+        }
+        axios.post("https://crowpilot.onrender.com/api/photos", data)
+        .then(response => {
+            Alert.alert("", "Photo has been submitted successfully.", [
                 {
                     text: "Roger.",
                     onPress: navigation.goBack
                 }
             ])
-          });
-        }
+        })
+        .catch(error => {
+            console.error("Error fetching data: ", error);
+            Alert.alert("", `${error}`, [
+            {
+                text: "Roger.",
+                onPress: navigation.goBack
+            }
+            ])
+        });
+        
         
     }
     return (
