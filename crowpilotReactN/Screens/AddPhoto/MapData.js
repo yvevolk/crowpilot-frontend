@@ -12,12 +12,12 @@ export default function MapData() {
     const [coordinates, setCoordinates] = useState(null)
 
     async function handleCalc() {
-        const data = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${origCode.toUpperCase()}%22&limit=20`)
-        console.log(data.data.results[0].coordinates.lat, data.data.results[0].coordinates.lon);
-        // const c =  getC(airports[origCode], airports[destCode])
-        // const fraction = getFraction(photoTime, depTime, arrTime)
-        // const coord = intermediatePoint(c, airports[origCode], airports[destCode], fraction)
-        // setCoordinates(coord)
+        const origin = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${origCode.toUpperCase()}%22&limit=20`)
+        const destination = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${destCode.toUpperCase()}%22&limit=20`)
+        const c =  getC([+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon])
+        const fraction = getFraction(photoTime, depTime, arrTime)
+        const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
+        setCoordinates(coord)
     }
     return (
     <View>

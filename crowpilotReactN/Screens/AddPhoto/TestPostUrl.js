@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions } from 're
 import axios from "axios"
 import { useContext } from 'react';
 import { AuthContext } from '../../Contexts/AuthContext';
-import {airports} from '../../Coordinates/Airports'
 import {getC, getFraction, intermediatePoint} from '../../Coordinates/Haversine'
 const dimensions = Dimensions.get('window')
 const date = new Date()
@@ -49,11 +48,12 @@ export default function TestPostUrl({ route, navigation }) {
         remarks: confirmInfo.remarks.value
     }
     const handlePost = async () => {
-        const c =  getC(airports[origCode], airports[destCode])
+        const origin = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${origCode.toUpperCase()}%22&limit=20`)
+        const destination = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${destCode.toUpperCase()}%22&limit=20`)
+        const c =  getC([+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon])
         const fraction = getFraction(photoTime, depTime, arrTime)
-        const coord = intermediatePoint(c, airports[origCode], airports[destCode], fraction)
-        const numbersCoord = coord.map(str => +str)
-        setCoordinates(numbersCoord)
+        const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
+        setCoordinates(coord)
         console.log(coordinates[0], typeof coordinates[0]);
         if (coordinates != ["none", "none"]) {
             data.location = {
