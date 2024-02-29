@@ -50,6 +50,7 @@ useEffect(() => {
                         date_taken = {photo.date_taken}
                         flight_origin={photo.flight_origin}
                         flight_dest={photo.flight_dest}
+                        coordinates={photo.location}
                         remarks = {photo.remarks}
                         />
                     </View>
