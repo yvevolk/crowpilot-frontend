@@ -1,10 +1,10 @@
 import axios from "axios";
-
+import { Alert } from "react-native";
 const request = axios.create({
   baseURL: "https://crowpilot.onrender.com/api",
 });
 
-export const getAirport = async (IATAcode) => {
+export const getAirportInfo = async (IATAcode) => {
   try {
     const response = await axios.get(`https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/airports-code@public/records?select=coordinates&where=column_1%20%3D%20%22${IATAcode}%22&limit=20`)
     return response
@@ -46,5 +46,23 @@ export const patchUserProfile = async (newInfo, username) => {
     return response.data;
   } catch(err) {
     console.log(err)
+  }
+}
+
+export const postPicture = async (data) => {
+  try {
+    await request.post("/photos", data)
+    Alert.alert("", "Photo has been submitted successfully.", [
+      {
+        text: "Roger."
+      }
+    ])
+  } catch (err) {
+      console.error("Error fetching data: ", err);
+      Alert.alert("", `${err}`, [
+      {
+          text: "Roger."
+      }
+      ])
   }
 }

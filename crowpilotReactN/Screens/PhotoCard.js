@@ -4,7 +4,7 @@ import { useState } from 'react';
 import moment from 'moment';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
-const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, navigation }) => {
+const PhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, coordinates, navigation }) => {
 
 const [showModal, setShowModal] = useState(false);
 const toggleModal = () => {setShowModal(!showModal)};
@@ -44,6 +44,7 @@ const idealHW = (dimensions.width * 0.95);
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.header}>Route</Text>
         <Text>{flight_origin} - {flight_dest}</Text>
+        <Text>{coordinates.lat},{coordinates.long}</Text>
         {remarks && (
             <View>
 <Text style = {styles.header}>Remarks</Text>
