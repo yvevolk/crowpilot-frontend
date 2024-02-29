@@ -61,6 +61,7 @@ export default function TestPostUrl({ route, navigation }) {
         data.location.lat = coord[0]
         data.location.long = coord[1]
         await postPicture(data)
+        navigation.goBack();
         navigation.navigate("Map", {
             screen: "MapScreen"
         })
