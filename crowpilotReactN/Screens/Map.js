@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Button, PermissionsAndroid } from 'react-native';
 import  MapView, { Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { useState, useEffect } from 'react'
 import { getAllPhotos } from '../api'
@@ -7,10 +7,12 @@ import SmallPhotoCard from './SmallPhotoCard';
 import Loader from './Loader'
 import UserProfile from './UserProfile';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Location from 'expo-location';
 
 const Stack = createNativeStackNavigator();
 
 export default function MapNav () {
+
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -27,12 +29,26 @@ export default function MapNav () {
 
 function Map() {
 
+const [location, setLocation] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation(location.coords)
+        })();
+      }, []);
+
 const [isLoading, setIsLoading] = useState(true)
 const [visible, setVisible] = useState(false);
+const [photos, setPhotos] = useState([]);
 const [overlayData, setOverlayData] = useState({})
 const toggleOverlay = () => {setVisible(!visible)};
 
-const [photos, setPhotos] = useState([]);
 
 useEffect(() => {
     getAllPhotos().then((photos) => {
@@ -49,12 +65,12 @@ if (isLoading) {
 }
     return (
     <View>
-    <MapView
+      <MapView
       provider = {PROVIDER_GOOGLE}
       style={styles.map}
       initialRegion={{
-        latitude: 50,
-        longitude: -5,
+        latitude: location.latitude,
+        longitude: location.longitude,
         latitudeDelta: 10,
         longitudeDelta: 10}}>
             {photos.map((photo) => {
