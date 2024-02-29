@@ -33,12 +33,13 @@ const [overlayData, setOverlayData] = useState({})
 const toggleOverlay = () => {setVisible(!visible)};
 
 const [photos, setPhotos] = useState([]);
+
 useEffect(() => {
     getAllPhotos().then((photos) => {
         setPhotos(photos)
         setIsLoading(false)
     }),
-    [photos]
+    []
 })
 
 if (isLoading) {
@@ -65,13 +66,14 @@ if (isLoading) {
                         longitude: photo.location.long,
                     }}
                     onPress={() => {setOverlayData(photo);
-                    toggleOverlay()}}>
-                <Overlay isVisible = {visible}
+                    toggleOverlay()}}/>
+                    )
+            })}
+    </MapView>
+    <Overlay isVisible = {visible}
                 onBackdropPress={toggleOverlay}
                 backdropStyle = {{
-                    backgroundColor: 'rgba(0, 0, 0, 0.05)'
-                }}
-                >
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)'}}>
                  <SmallPhotoCard
                         photo_url = {overlayData.photo_url}
                         taken_by = {overlayData.taken_by}
@@ -79,13 +81,8 @@ if (isLoading) {
                         flight_origin={overlayData.flight_origin}
                         flight_dest={overlayData.flight_dest}
                         remarks = {overlayData.remarks}
-                        setVisible = {setVisible}
                         />
                 </Overlay>
-                </Marker>
-                    )
-            })}
-    </MapView>
   </View>
     )}
 

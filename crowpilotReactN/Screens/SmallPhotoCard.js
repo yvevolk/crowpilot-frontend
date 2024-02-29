@@ -1,22 +1,40 @@
-import { StyleSheet, Image, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Image, Text, View, Dimensions, TouchableOpacity, Modal, Button } from 'react-native';
 'react-native-gesture-handler';
+import { useState } from 'react';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 const dimensions = Dimensions.get('window')
 const idealHW = (dimensions.width * 0.95);
 
-const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks }) => {
+const SmallPhotoCard = ({_id, photo_url, taken_by, date_taken, flight_origin, flight_dest, remarks, onMap}) => {
 
 const navigation = useNavigation()
+const [showModal, setShowModal] = useState(false);
+const toggleModal = () => {setShowModal(!showModal)};
 
-    return(<>
+    return(
+    <>
         <View key = {`${_id}`} style = {styles.singleCard}>
             <View style = {styles.header}>
             <Text style = {styles.takenWhen}>{moment(date_taken).fromNow()}</Text>
             </View>
             <View style = {styles.container}>
             <View style = {styles.column}>
-            <Image style = {styles.image} source={{uri: `${photo_url}`}}></Image>
+            <TouchableOpacity onPress={toggleModal}>
+            <Image style = {styles.image} source={{uri: `${photo_url}`}}/>
+            </TouchableOpacity>
+            <Modal transparent = {true} visible = {showModal} animationType='fade' >
+                <View style = {styles.modalContainer}>
+                <ReactNativeZoomableView
+                minZoom = {0.5}
+                maxZoom = {5}
+                >
+            <Image source = {{uri: photo_url}} style = {{height: dimensions.height, width: dimensions.height}} resizeMode='contain'/>
+            </ReactNativeZoomableView>
+            <Button title = "Close" onPress={toggleModal}/>
+            </View>
+            </Modal>
             </View>
         <View style = {styles.column}>
         {taken_by && (
@@ -88,6 +106,9 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         marginBottom: 10
+    },
+    modalContainer: {
+        flex: 1
     }
   });
 
