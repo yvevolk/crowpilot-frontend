@@ -11,7 +11,6 @@ const month = (date.getMonth() + 1).toString().length !== 2 ? `0${(date.getMonth
 const day = (date.getDate() + 1).toString().length !== 2 ? `0${(date.getDate() + 1).toString()}` : date.getDate() + 1
 
 export default function TestPostUrl({ route, navigation }) {
-    // const dimensions = Dimensions.get('screen')
     const [origCode, setOrigCode] = useState("none")
     const [destCode, setDestCode] = useState("none")
     const [depTime, setDepTime] = useState("none")
