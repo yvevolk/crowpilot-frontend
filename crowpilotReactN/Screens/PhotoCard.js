@@ -43,7 +43,7 @@ const idealHW = (dimensions.width * 0.95);
         <Text style = {styles.header}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.header}>Route</Text>
-        <Text>{flight_origin} - {flight_dest}</Text>
+        <Text style = {{textTransform: 'uppercase'}}>{flight_origin} - {flight_dest}</Text>
         <Text>{coordinates.lat},{coordinates.long}</Text>
         {remarks && (
             <View>

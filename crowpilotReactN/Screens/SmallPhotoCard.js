@@ -52,7 +52,7 @@ const toggleModal = () => {setShowModal(!showModal)};
         <Text style = {styles.heading}>Date</Text>
         <Text>{moment(date_taken).format('DD/MM/yyyy')}</Text>
         <Text style = {styles.heading}>Route</Text>
-        <Text>{flight_origin} - {flight_dest}</Text>
+        <Text style = {{textTransform: 'uppercase'}}>{flight_origin} - {flight_dest}</Text>
         {remarks.length !== 0 && (
             <View>
 <Text style = {styles.heading}>Remarks</Text>
