@@ -23,9 +23,9 @@ export default function Gallery({navigation}) {
   };
   const handleUpLoad = async (file) => {
     console.log(file.uri);
-    await MediaLibrary.requestPermissionsAsync()
-    MediaLibrary.getAssetInfoAsync(file.uri)
-    .then((result) => console.log(result))
+    // await MediaLibrary.requestPermissionsAsync()
+    // MediaLibrary.getAssetInfoAsync(file.uri)
+    // .then((result) => console.log(result))
     const data = new FormData()
     data.append('file', file)
     data.append('upload_preset', process.env.EXPO_PUBLIC_UPLOAD_PRESET)
