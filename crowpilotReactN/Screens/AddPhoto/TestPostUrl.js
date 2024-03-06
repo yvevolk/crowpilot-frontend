@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions, Image, Modal} from 'react-native';
 import { useContext } from 'react';
 import { AuthContext } from '../../Contexts/AuthContext';
 import { getC, getFraction, intermediatePoint } from '../../Coordinates/Haversine'
+import DatePicker from 'react-native-modern-datepicker';
 import { getAirportInfo, getTimeZone, postPicture } from '../../api';
 const dimensions = Dimensions.get('window')
 const date = new Date()
@@ -67,7 +68,23 @@ export default function TestPostUrl({ route, navigation }) {
             screen: "MapScreen"
         })
     }
+
+const [open, setOpen] = useState(false);
+
+const handleOnPress = () => {
+        setOpen(!open);
+      };
+
     return (
+        <>
+        
+        <Modal visible = {open}>
+            <DatePicker mode="calendar"/>
+            <Button title = "OK" onPress={handleOnPress}/>
+        </Modal>
+
+<Button title = "MODAL" onPress={handleOnPress}></Button>
+
         <View style={styles.container}>
             <Image source = {{uri: photo_url}} style = {{height: dimensions.height*0.3, width: dimensions.height*0.3}} resizeMode='contain'/>
             <Text>Flight code:</Text>
@@ -112,6 +129,7 @@ export default function TestPostUrl({ route, navigation }) {
                 onPress={handlePost}
             />
         </View>
+        </>
     );
 }
 const styles = StyleSheet.create({
