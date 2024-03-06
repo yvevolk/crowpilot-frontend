@@ -12,7 +12,14 @@ export const getAirportInfo = async (IATAcode) => {
     console.log("Airport not in database", "error :", err)
   }
 };
-
+export const getTimeZone = async (lat, long) => {
+  try {
+    const response = await axios.get(`https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${long}`)
+    return response
+  } catch (err) {
+    console.log(err)
+  }
+}
 export const getAllPhotos = async () => {
   try {
     const response = await request.get(`/photos`);
