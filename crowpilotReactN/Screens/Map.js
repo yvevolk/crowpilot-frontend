@@ -29,7 +29,7 @@ export default function MapNav () {
 
 function Map() {
 
-const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState({ latitude: 51.479677631698245, longitude: -0.45161510605013355 });
 
     useEffect(() => {
         (async () => {
