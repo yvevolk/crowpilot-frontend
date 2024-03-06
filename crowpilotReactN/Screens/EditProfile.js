@@ -12,9 +12,9 @@ const [editObject] = useState({})
 const handleUpdate = (e) => {
     e.preventDefault();
     {patchUserProfile(editObject, userToken.username).then((res) => {
-        Alert.alert("", "Profile updated.", [
+        Alert.alert("", "Profile successfully updated.", [
             {
-                text: "ok",
+                text: "Roger.",
                 onPress: navigation.goBack
             }
         ])
@@ -81,7 +81,8 @@ useEffect(() => {
       onChangeText={(value) => {editObject.avatar_url = value}}>
       </TextInput></View>
       <View style = {styles.submitContainer}>
-      <Button title = "Submit" onPress = {handleUpdate}></Button></View>
+      <Button title = "Submit" onPress = {handleUpdate}/>
+      </View>
         </View>
     )
 }
