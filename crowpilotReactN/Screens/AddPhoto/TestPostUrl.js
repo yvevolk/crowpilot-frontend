@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions, Image, Modal} from 'react-native';
-import { useContext } from 'react';
 import { AuthContext } from '../../Contexts/AuthContext';
 import { getC, getFraction, intermediatePoint } from '../../Coordinates/Haversine'
 import DatePicker from 'react-native-modern-datepicker';
@@ -13,26 +12,8 @@ const todayDate = moment(new Date).format('yyyy-MM-DD')
 
 export default function TestPostUrl({ route, navigation }) {
     const { userToken } = useContext(AuthContext)
-    const { photo_url } = route.params
-    const [dateTaken, setDateTaken] = useState("")
+    const { photo_url } = route.params;
     const [postData] = useState({
-        photo_url,
-        location: {
-            lat: 0,
-            long: 0,
-        },
-        taken_by: userToken.username,
-        photo_type: "",
-        date_taken: dateTaken,
-        flight_code: "",
-        flight_origin: "",
-        flight_dest: "",
-        remarks: ""
-    })
-
-    let photoTime = "00:00"
-    
-    let data = {
         photo_url,
         location: {
             lat: 0,
@@ -45,11 +26,54 @@ export default function TestPostUrl({ route, navigation }) {
         flight_origin: "",
         flight_dest: "",
         remarks: ""
+    })
+
+const [times] = useState({
+    arrTime: "",
+    depTime: "",
+    photoTime: ""
+})
+
+const validatePost = () => {
+        if (!postData.flight_code){
+            Alert.alert("", "Please enter a flight code.", [
+                {text: "Roger."}
+            ])
+        }
+        else if (!postData.flight_origin){
+            Alert.alert("", "Please enter a flight origin code.", [
+                {text: "Roger."}
+            ])
+        }
+        else if (!postData.flight_dest){
+            Alert.alert("", "Please enter a flight destination code.", [
+                {text: "Roger."}
+            ])
+        }
+        else if (!times.arrTime){
+            Alert.alert("", "Please enter an arrival time. This does not need to be exact.", [
+                {text: "Roger."}
+            ])
+        }
+        else if (!times.depTime){
+            Alert.alert("", "Please enter a departure time. This does not need to be exact.", [
+                {text: "Roger."}
+            ])
+        }
+        else if (!times.photoTime){
+            Alert.alert("", "Please enter the time the photo was taken.", [
+                {text: "Roger."}
+            ])
+        }
+        else {
+            handlePost()
+        }
     }
 
-    console.log(postData)
-
     const handlePost = async () => {
+
+        //needs to be updated to reflect new variable names!!!
+
         // const origin = await getAirportInfo(origCode.toUpperCase())
         // const destination = await getAirportInfo(destCode.toUpperCase())
         // const originTimeZone = await getTimeZone(+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon)
@@ -60,6 +84,7 @@ export default function TestPostUrl({ route, navigation }) {
         // const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
         // data.location.lat = coord[0]
         // data.location.long = coord[1]
+
         await postPicture(postData)
         navigation.goBack();
         navigation.navigate("Map", {
@@ -75,17 +100,19 @@ const handleOnPress = () => {
 
     return (
         <>
-        <ScrollView>
-        
         <Modal visible = {open}
                animationType="slide"
+               transparent={true}
                >
+                <View style = {styles.modalContainer}>
             <DatePicker mode="calendar"
              maximumDate={todayDate}
              onSelectedChange={(date) => {postData.date_taken = date.replaceAll("/", "-")}}/>
             <Button title = "OK" onPress={handleOnPress}/>
+            </View>
         </Modal>
 
+        <ScrollView>
         <View style={styles.container}>
             <Image source = {{uri: photo_url}} style = {{height: dimensions.height*0.3, width: dimensions.height*0.3}} resizeMode='contain'/>
             <View style = {styles.category}>
@@ -113,7 +140,7 @@ const handleOnPress = () => {
                 />
                 </View>
                 <View style = {styles.category}>
-            <Text>Flight date: {dateTaken ? dateTaken : todayDate}</Text>
+            <Text>Flight date: {postData.date_taken ? moment(postData.date_taken).format('DD/MM/yyyy') : moment(todayDate).format('DD/MM/yyyy')}</Text>
                 <Button title = "Select date" onPress={handleOnPress}/>
                 </View>    
                 <View style = {styles.category}>
@@ -121,7 +148,7 @@ const handleOnPress = () => {
                 <TextInput style = {styles.textEntry}
                 placeholder = 'e.g. 12:00'
                 defaultValue= ''
-                onChangeText={(value) => {depTime = value}}
+                onChangeText={(value) => {times.depTime = value}}
                 />
                 </View>
                 <View style = {styles.category}>
@@ -129,7 +156,7 @@ const handleOnPress = () => {
                 <TextInput style = {styles.textEntry}
                 placeholder = 'e.g. 17:00'
                 defaultValue= ''
-                onChangeText={(value) => {arrTime = value}}
+                onChangeText={(value) => {times.arrTime = value}}
                 />
                 </View>
                 <View style = {styles.category}>
@@ -137,7 +164,7 @@ const handleOnPress = () => {
                 <TextInput style = {styles.textEntry}
                 placeholder = 'e.g. 12:30'
                 defaultValue= ''
-                onChangeText={(value) => {photoTime = value}}
+                onChangeText={(value) => {times.photoTime = value}}
                 />
                 </View>
                 <View style = {styles.category}>
@@ -153,7 +180,6 @@ const handleOnPress = () => {
                 <TextInput style = {styles.textEntry}
                 placeholder = 'e.g. Hello from above!'
                 defaultValue= ''
-                multiline = {true}
                 onChangeText={(value) => {postData.remarks = value}}
                 />
                 </View>
@@ -161,7 +187,7 @@ const handleOnPress = () => {
             <Button 
                 style={styles.button}
                 title="Test Post"
-                onPress={handlePost}
+                onPress={validatePost}
             />
         </View>
         </ScrollView>
@@ -187,4 +213,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10
     },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        justifyContent: "center",
+    }
   });

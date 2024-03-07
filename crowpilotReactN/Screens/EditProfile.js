@@ -20,7 +20,9 @@ const handleUpdate = (e) => {
         ])
     })
     .catch((err) => {
-        Alert.alert("Something went wrong.")
+        Alert.alert("", "Something went wrong.", [{
+            text: "Roger."
+        }])
     })}
 }
 
