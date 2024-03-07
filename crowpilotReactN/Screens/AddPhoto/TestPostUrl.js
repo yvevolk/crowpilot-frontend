@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions, Image, Modal} from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions, Image, Modal, Switch} from 'react-native';
 import { AuthContext } from '../../Contexts/AuthContext';
 import { getC, getFraction, intermediatePoint } from '../../Coordinates/Haversine'
 import DatePicker from 'react-native-modern-datepicker';
@@ -20,7 +20,7 @@ export default function TestPostUrl({ route, navigation }) {
             long: 0,
         },
         taken_by: userToken.username,
-        photo_type: "",
+        photo_type: "air",
         date_taken: "",
         flight_code: "",
         flight_origin: "",
@@ -33,6 +33,8 @@ const [times] = useState({
     depTime: "",
     photoTime: ""
 })
+
+console.log(postData)
 
 const validatePost = () => {
         if (!postData.flight_code){
@@ -93,10 +95,19 @@ const validatePost = () => {
     }
 
 const [open, setOpen] = useState(false);
+const [enabled, setIsEnabled] = useState(false)
 
 const handleOnPress = () => {
         setOpen(!open);
       };
+
+const toggleSwitch = () => {setIsEnabled(!enabled)
+        if (enabled) {
+            postData.photo_type = "air"
+        }
+        else {
+            postData.photo_type = "land"
+        }}      
 
     return (
         <>
@@ -112,6 +123,7 @@ const handleOnPress = () => {
             </View>
         </Modal>
 
+
         <ScrollView>
         <View style={styles.container}>
             <Image source = {{uri: photo_url}} style = {{height: dimensions.height*0.3, width: dimensions.height*0.3}} resizeMode='contain'/>
@@ -124,7 +136,7 @@ const handleOnPress = () => {
                 />
                 </View>
                 <View style = {styles.category}>
-            <Text>Flight origin:</Text>
+                <Text>Flight origin:</Text>
                 <TextInput style = {styles.textEntry}
                 placeholder = 'e.g. LHR'
                 defaultValue= ''
@@ -168,13 +180,21 @@ const handleOnPress = () => {
                 />
                 </View>
                 <View style = {styles.category}>
-            <Text>Type of photo:</Text>
-                <TextInput style = {styles.textEntry}
-                placeholder = 'e.g. air'
-                defaultValue= ''
-                onChangeText={(value) => {postData.photo_type = value}}
-                />
+                <Text>Type of photo:</Text>
                 </View>
+
+                <View style={styles.switchContainer}>
+                <Text style = {styles.switchLabel}>Air</Text>
+                <Switch
+                style={{transform: [{scaleX: 1.5}, {scaleY: 1.5}]}}
+                value={enabled}
+                onValueChange={toggleSwitch}
+                thumbColor={enabled ? 'gray' : 'skyblue'}
+                trackColor={enabled ? 'skyblue' : 'gray'}
+                />
+                <Text style = {styles.switchLabel}>Land</Text>
+                </View>
+
                 <View style = {styles.category}>
             <Text>Remarks:</Text>
                 <TextInput style = {styles.textEntry}
@@ -217,5 +237,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         justifyContent: "center",
+    },
+    switchContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection:'row',
+    },
+    switchLabel:{
+        marginHorizontal: '10%',
     }
   });
