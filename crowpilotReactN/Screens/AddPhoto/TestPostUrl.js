@@ -13,9 +13,13 @@ const todayDate = moment(new Date).format('yyyy-MM-DD')
 
 export default function TestPostUrl({ route, navigation }) {
     const { userToken } = useContext(AuthContext)
-    const { photo_url } = route.params;
+    const {
+        // photo_url,
+        data
+    } = route.params;
+
     const [postData] = useState({
-        photo_url,
+        photo_url: "",
         location: {
             lat: 0,
             long: 0,
@@ -87,7 +91,15 @@ const validatePost = () => {
         // const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
         // data.location.lat = coord[0]
         // data.location.long = coord[1]
-
+        await fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL, {
+        method: 'post',
+        body: data
+        })
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data.secure_url)
+            postData.photo_url = data.secure_url
+        })
         await postPicture(postData)
         navigation.goBack();
         navigation.navigate("Map", {
@@ -143,7 +155,7 @@ const toggleSwitch = () => {setIsEnabled(!enabled)
 
         <ScrollView>
         <View style={styles.container}>
-            <Image source = {{uri: photo_url}} style = {{height: dimensions.height*0.3, width: dimensions.height*0.3}} resizeMode='contain'/>
+            <Image source = {{uri: data._parts[0][1].uri}} style = {{height: dimensions.height*0.3, width: dimensions.height*0.3}} resizeMode='contain'/>
             <View style = {styles.category}>
             <Text>Flight code:</Text>
                 <TextInput style = {styles.textEntry}
