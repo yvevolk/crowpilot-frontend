@@ -22,7 +22,6 @@ export default function Gallery({navigation}) {
     }
   };
   const handleUpLoad = async (file) => {
-    console.log(file.uri);
     // await MediaLibrary.requestPermissionsAsync()
     // MediaLibrary.getAssetInfoAsync(file.uri)
     // .then((result) => console.log(result))
@@ -31,17 +30,18 @@ export default function Gallery({navigation}) {
     data.append('upload_preset', process.env.EXPO_PUBLIC_UPLOAD_PRESET)
     data.append('cloud_name', process.env.EXPO_PUBLIC_CLOUD_NAME)
 
-    fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL, {
-        method: 'post',
-        body: data
-    })
-    .then(res => res.json())
-    .then((data) => {
-      console.log(data.secure_url)
+    // fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL, {
+    //     method: 'post',
+    //     body: data
+    // })
+    // .then(res => res.json())
+    // .then((data) => {
+      // console.log(data.secure_url)
       navigation.navigate("TestPost", {
-        photo_url: data.secure_url
+        // photo_url: data.secure_url
+        data
       })
-    })
+    // })
  }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
