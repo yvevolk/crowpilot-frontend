@@ -7,16 +7,13 @@ import { getAirportInfo, getTimeZone, postPicture } from '../../api';
 import moment from 'moment'
 import { ScrollView } from 'react-native-gesture-handler';
 const dimensions = Dimensions.get('window')
-
+import Loader from '../Loader'
 
 const todayDate = moment(new Date).format('yyyy-MM-DD')
 
 export default function TestPostUrl({ route, navigation }) {
     const { userToken } = useContext(AuthContext)
-    const {
-        // photo_url,
-        data
-    } = route.params;
+    const { data } = route.params;
 
     const [postData] = useState({
         photo_url: "",
@@ -26,7 +23,7 @@ export default function TestPostUrl({ route, navigation }) {
         },
         taken_by: userToken.username,
         photo_type: "air",
-        date_taken: "",
+        date_taken: todayDate,
         flight_code: "",
         flight_origin: "",
         flight_dest: "",
@@ -38,8 +35,6 @@ const [times] = useState({
     depTime: "",
     photoTime: ""
 })
-
-console.log(postData)
 
 const validatePost = () => {
         if (!postData.flight_code){
@@ -73,7 +68,10 @@ const validatePost = () => {
             ])
         }
         else {
-            handlePost()
+            setIsLoading(true)
+            handlePost().then(() => {
+              setIsLoading(false)
+            })
         }
     }
 
@@ -110,6 +108,7 @@ const validatePost = () => {
 const [openDate, setOpenDate] = useState(false);
 const [openTime, setOpenTime] = useState(false)
 const [enabled, setIsEnabled] = useState(false);
+const [isLoading, setIsLoading] = useState(false)
 
 const handleOnPressDate = () => {
         setOpenDate(!openDate);
@@ -126,6 +125,13 @@ const toggleSwitch = () => {setIsEnabled(!enabled)
         else {
             postData.photo_type = "land"
         }}      
+
+if (isLoading){
+    return (
+        <Loader
+        params = "Post"/>
+    )
+}
 
     return (
         <>
@@ -186,7 +192,12 @@ const toggleSwitch = () => {setIsEnabled(!enabled)
                 </View>    
                 <View style = {styles.category}>
             <Text>Time of departure: {times.depTime ? times.depTime : moment(Date.now()).format('HH:mm')}</Text>
-            <Button title = "Select departure time" onPress={handleOnPressTime}/>
+            <TextInput style = {styles.textEntry}
+                placeholder = 'e.g. 17:00'
+                defaultValue= ''
+                onChangeText={(value) => {times.depTime = value}}
+                />
+            {/* <Button title = "Select departure time" onPress={handleOnPressTime}/> */}
                 </View>
                 <View style = {styles.category}>
             <Text>Time of arrival:</Text>
