@@ -8,6 +8,7 @@ import moment from 'moment'
 import { ScrollView } from 'react-native-gesture-handler';
 const dimensions = Dimensions.get('window')
 
+
 const todayDate = moment(new Date).format('yyyy-MM-DD')
 
 export default function TestPostUrl({ route, navigation }) {
@@ -43,12 +44,12 @@ const validatePost = () => {
             ])
         }
         else if (!postData.flight_origin){
-            Alert.alert("", "Please enter a flight origin code.", [
+            Alert.alert("", "Please enter the airport code for your flight origin.", [
                 {text: "Roger."}
             ])
         }
         else if (!postData.flight_dest){
-            Alert.alert("", "Please enter a flight destination code.", [
+            Alert.alert("", "Please enter the airport code for your flight destination.", [
                 {text: "Roger."}
             ])
         }
@@ -94,11 +95,16 @@ const validatePost = () => {
         })
     }
 
-const [open, setOpen] = useState(false);
-const [enabled, setIsEnabled] = useState(false)
+const [openDate, setOpenDate] = useState(false);
+const [openTime, setOpenTime] = useState(false)
+const [enabled, setIsEnabled] = useState(false);
 
-const handleOnPress = () => {
-        setOpen(!open);
+const handleOnPressDate = () => {
+        setOpenDate(!openDate);
+      };
+
+const handleOnPressTime = () => {
+        setOpenTime(!openTime);
       };
 
 const toggleSwitch = () => {setIsEnabled(!enabled)
@@ -111,7 +117,7 @@ const toggleSwitch = () => {setIsEnabled(!enabled)
 
     return (
         <>
-        <Modal visible = {open}
+        <Modal visible = {openDate}
                animationType="slide"
                transparent={true}
                >
@@ -119,10 +125,21 @@ const toggleSwitch = () => {setIsEnabled(!enabled)
             <DatePicker mode="calendar"
              maximumDate={todayDate}
              onSelectedChange={(date) => {postData.date_taken = date.replaceAll("/", "-")}}/>
-            <Button title = "OK" onPress={handleOnPress}/>
+            <Button title = "OK" onPress={handleOnPressDate}/>
             </View>
         </Modal>
 
+        <Modal visible = {openTime}
+               animationType="slide"
+               transparent={true}
+               >
+                <View style = {styles.modalContainer}>
+            <DatePicker mode="time"
+             onSelectedChange={(time) => {times.depTime = time}}/>
+            <Button title = "OK" onPress={handleOnPressTime}/>
+            </View>
+        </Modal>
+      
 
         <ScrollView>
         <View style={styles.container}>
@@ -153,15 +170,11 @@ const toggleSwitch = () => {setIsEnabled(!enabled)
                 </View>
                 <View style = {styles.category}>
             <Text>Flight date: {postData.date_taken ? moment(postData.date_taken).format('DD/MM/yyyy') : moment(todayDate).format('DD/MM/yyyy')}</Text>
-                <Button title = "Select date" onPress={handleOnPress}/>
+                <Button title = "Select date" onPress={handleOnPressDate}/>
                 </View>    
                 <View style = {styles.category}>
-            <Text>Time of departure:</Text>
-                <TextInput style = {styles.textEntry}
-                placeholder = 'e.g. 12:00'
-                defaultValue= ''
-                onChangeText={(value) => {times.depTime = value}}
-                />
+            <Text>Time of departure: {times.depTime ? times.depTime : moment(Date.now()).format('HH:mm')}</Text>
+            <Button title = "Select departure time" onPress={handleOnPressTime}/>
                 </View>
                 <View style = {styles.category}>
             <Text>Time of arrival:</Text>
