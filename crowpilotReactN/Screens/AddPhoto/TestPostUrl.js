@@ -78,19 +78,16 @@ const validatePost = () => {
     }
 
     const handlePost = async () => {
-
-        //needs to be updated to reflect new variable names!!!
-
-        // const origin = await getAirportInfo(origCode.toUpperCase())
-        // const destination = await getAirportInfo(destCode.toUpperCase())
-        // const originTimeZone = await getTimeZone(+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon)
-        // const destTimeZone = await getTimeZone(+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon)
-        // console.log(originTimeZone, destTimeZone);
-        // const c = getC([+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon])
-        // const fraction = getFraction(photoTime, depTime, arrTime)
-        // const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
-        // data.location.lat = coord[0]
-        // data.location.long = coord[1]
+        const origin = await getAirportInfo(postData.flight_origin.toUpperCase())
+        const destination = await getAirportInfo(postData.flight_dest.toUpperCase())
+        const originTimeZone = await getTimeZone(+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon)
+        const destTimeZone = await getTimeZone(+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon)
+        console.log(originTimeZone, destTimeZone);
+        const c = getC([+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon])
+        const fraction = getFraction(times.photoTime, times.depTime, times.arrTime)
+        const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
+        data.location.lat = coord[0]
+        data.location.long = coord[1]
         await fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL, {
         method: 'post',
         body: data
