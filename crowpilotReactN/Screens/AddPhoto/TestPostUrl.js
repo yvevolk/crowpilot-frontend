@@ -5,6 +5,7 @@ import { getC, getFraction, intermediatePoint } from '../../Coordinates/Haversin
 import DatePicker from 'react-native-modern-datepicker';
 import { getAirportInfo, getTimeZone, postPicture } from '../../api';
 import moment from 'moment'
+import MaskInput from 'react-native-mask-input';
 import { ScrollView } from 'react-native-gesture-handler';
 const dimensions = Dimensions.get('window')
 import Loader from '../Loader'
@@ -30,12 +31,6 @@ export default function TestPostUrl({ route, navigation }) {
         remarks: ""
     })
 
-const [times] = useState({
-    arrTime: "",
-    depTime: "",
-    photoTime: ""
-})
-
 const validatePost = () => {
         if (!postData.flight_code){
             Alert.alert("", "Please enter a flight code.", [
@@ -52,18 +47,18 @@ const validatePost = () => {
                 {text: "Roger."}
             ])
         }
-        else if (!times.arrTime){
-            Alert.alert("", "Please enter an arrival time. This does not need to be exact.", [
+        else if (!regex.test(depTime)){
+            Alert.alert("", "Please enter a valid departure time in 24-hour format, e.g. 08:30.", [
                 {text: "Roger."}
             ])
         }
-        else if (!times.depTime){
-            Alert.alert("", "Please enter a departure time. This does not need to be exact.", [
+        else if (!regex.test(arrTime)){
+            Alert.alert("", "Please enter a valid arrival time in 24-hour format, e.g. 08:30.", [
                 {text: "Roger."}
             ])
         }
-        else if (!times.photoTime){
-            Alert.alert("", "Please enter the time the photo was taken.", [
+        else if (!regex.test(photoTime)){
+            Alert.alert("", "Please enter a valid photo time in 24-hour format, e.g. 08:30.", [
                 {text: "Roger."}
             ])
         }
@@ -75,7 +70,14 @@ const validatePost = () => {
         }
     }
 
+    const times = {
+        depTime: depTime,
+        arrTime: arrTime,
+        photoTime: photoTime
+    }
+
     const handlePost = async () => {
+       
         const origin = await getAirportInfo(postData.flight_origin.toUpperCase())
         const destination = await getAirportInfo(postData.flight_dest.toUpperCase())
         const originTimeZone = await getTimeZone(+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon)
@@ -102,17 +104,19 @@ const validatePost = () => {
         })
     }
 
+const [depTime, setDepTime] = useState('')
+const [arrTime, setArrTime] = useState('')
+const [photoTime, setPhotoTime] = useState(moment(Date.now()).format('HH:mm'))
+
+const timeMask = [/\d/, /\d/, ':', /\d/, /\d/]
+const regex = new RegExp(/\d\d:\d\d/)
+
 const [openDate, setOpenDate] = useState(false);
-const [openTime, setOpenTime] = useState(false)
 const [enabled, setIsEnabled] = useState(false);
-const [isLoading, setIsLoading] = useState(false)
+const [isLoading, setIsLoading] = useState(false);
 
 const handleOnPressDate = () => {
         setOpenDate(!openDate);
-      };
-
-const handleOnPressTime = () => {
-        setOpenTime(!openTime);
       };
 
 const toggleSwitch = () => {setIsEnabled(!enabled)
@@ -143,19 +147,7 @@ if (isLoading){
             <Button title = "OK" onPress={handleOnPressDate}/>
             </View>
         </Modal>
-
-        <Modal visible = {openTime}
-               animationType="slide"
-               transparent={true}
-               >
-                <View style = {styles.modalContainer}>
-            <DatePicker mode="time"
-             onSelectedChange={(time) => {times.depTime = time}}/>
-            <Button title = "OK" onPress={handleOnPressTime}/>
-            </View>
-        </Modal>
       
-
         <ScrollView>
         <View style={styles.container}>
             <Image source = {{uri: data._parts[0][1].uri}} style = {{height: dimensions.height*0.3, width: dimensions.height*0.3}} resizeMode='contain'/>
@@ -188,28 +180,33 @@ if (isLoading){
                 <Button title = "Select date" onPress={handleOnPressDate}/>
                 </View>    
                 <View style = {styles.category}>
-            <Text>Time of departure: {times.depTime ? times.depTime : moment(Date.now()).format('HH:mm')}</Text>
-            <TextInput style = {styles.textEntry}
-                placeholder = 'e.g. 17:00'
-                defaultValue= ''
-                onChangeText={(value) => {times.depTime = value}}
+            <Text>Time of departure:</Text>
+            <MaskInput style = {styles.textEntry}
+               placeholder='HH:MM'
+               value = {depTime}
+               mask = {timeMask}
+               onChangeText={
+                (masked) => {setDepTime(masked)}}
                 />
-            {/* <Button title = "Select departure time" onPress={handleOnPressTime}/> */}
                 </View>
                 <View style = {styles.category}>
             <Text>Time of arrival:</Text>
-                <TextInput style = {styles.textEntry}
-                placeholder = 'e.g. 17:00'
-                defaultValue= ''
-                onChangeText={(value) => {times.arrTime = value}}
+            <MaskInput style = {styles.textEntry}
+               placeholder='HH:MM'
+               value = {arrTime}
+               mask = {timeMask}
+               onChangeText={
+                (masked) => {setArrTime(masked)}}
                 />
                 </View>
                 <View style = {styles.category}>
             <Text>Time of photo:</Text>
-                <TextInput style = {styles.textEntry}
-                placeholder = 'e.g. 12:30'
-                defaultValue= ''
-                onChangeText={(value) => {times.photoTime = value}}
+            <MaskInput style = {styles.textEntry}
+               placeholder='HH:MM'
+               value = {photoTime}
+               mask = {timeMask}
+               onChangeText={
+                (masked) => {setPhotoTime(masked)}}
                 />
                 </View>
                 <View style = {styles.category}>
