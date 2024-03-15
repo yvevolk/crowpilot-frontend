@@ -31,7 +31,7 @@ export default function TestPostUrl({ route, navigation }) {
         remarks: ""
     })
 
-const validatePost = () => {
+    const validatePost = () => {
         if (!postData.flight_code){
             Alert.alert("", "Please enter a flight code.", [
                 {text: "Roger."}
@@ -70,12 +70,42 @@ const validatePost = () => {
         }
     }
 
+    const [depTime, setDepTime] = useState('')
+    const [arrTime, setArrTime] = useState('')
+    const [photoTime, setPhotoTime] = useState(moment(Date.now()).format('HH:mm'))
+    
     const times = {
         depTime: depTime,
         arrTime: arrTime,
         photoTime: photoTime
     }
+    console.log(depTime, times)
 
+    const timeMask = [/\d/, /\d/, ':', /\d/, /\d/]
+    const regex = new RegExp(/\d\d:\d\d/)
+
+    const [openDate, setOpenDate] = useState(false);
+    const [enabled, setIsEnabled] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleOnPressDate = () => {
+            setOpenDate(!openDate);
+        };
+
+    const toggleSwitch = () => {setIsEnabled(!enabled)
+            if (enabled) {
+                postData.photo_type = "air"
+            }
+            else {
+                postData.photo_type = "land"
+            }}      
+
+    if (isLoading){
+        return (
+            <Loader
+            params = "Post"/>
+        )
+    }
     const handlePost = async () => {
        
         const origin = await getAirportInfo(postData.flight_origin.toUpperCase())
@@ -83,11 +113,12 @@ const validatePost = () => {
         const originTimeZone = await getTimeZone(+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon)
         const destTimeZone = await getTimeZone(+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon)
         console.log(originTimeZone, destTimeZone);
+        
         const c = getC([+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon])
         const fraction = getFraction(times.photoTime, times.depTime, times.arrTime)
         const coord = intermediatePoint(c, [+origin.data.results[0].coordinates.lat, +origin.data.results[0].coordinates.lon], [+destination.data.results[0].coordinates.lat, +destination.data.results[0].coordinates.lon], fraction)
-        data.location.lat = coord[0]
-        data.location.long = coord[1]
+        postData.location.lat = coord[0]
+        postData.location.long = coord[1]
         await fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL, {
         method: 'post',
         body: data
@@ -103,37 +134,6 @@ const validatePost = () => {
             screen: "MapScreen"
         })
     }
-
-const [depTime, setDepTime] = useState('')
-const [arrTime, setArrTime] = useState('')
-const [photoTime, setPhotoTime] = useState(moment(Date.now()).format('HH:mm'))
-
-const timeMask = [/\d/, /\d/, ':', /\d/, /\d/]
-const regex = new RegExp(/\d\d:\d\d/)
-
-const [openDate, setOpenDate] = useState(false);
-const [enabled, setIsEnabled] = useState(false);
-const [isLoading, setIsLoading] = useState(false);
-
-const handleOnPressDate = () => {
-        setOpenDate(!openDate);
-      };
-
-const toggleSwitch = () => {setIsEnabled(!enabled)
-        if (enabled) {
-            postData.photo_type = "air"
-        }
-        else {
-            postData.photo_type = "land"
-        }}      
-
-if (isLoading){
-    return (
-        <Loader
-        params = "Post"/>
-    )
-}
-
     return (
         <>
         <Modal visible = {openDate}
