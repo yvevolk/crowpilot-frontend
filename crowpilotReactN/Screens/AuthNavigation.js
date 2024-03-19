@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, Image, Dimensions, Animated } from 'react-native';
+import { StyleSheet, Text, Button, View, Image, Dimensions, Animated } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './SignUp.js'
 import LogIn from './LogIn.js';
