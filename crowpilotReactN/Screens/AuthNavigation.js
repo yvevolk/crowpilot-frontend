@@ -1,41 +1,51 @@
-import { StyleSheet, Text, Button, View, Image, Dimensions, Animated } from 'react-native';
+import { StyleSheet, Text, Pressable, View, Image, Dimensions, Animated } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './SignUp.js'
 import LogIn from './LogIn.js';
 import { Video } from 'expo-av';
+import { useContext } from 'react';
+import { StylesContext } from '../Contexts/ThemeContext.js';
 
 const dimensions = Dimensions.get('screen')
 const idealHW = (dimensions.width * 0.8)
 
 function Welcome({ navigation }) {
+
+    const {styles} = useContext(StylesContext)
+
         return (
-        <View style={styles.container}>
-        <Video
-        style = {styles.video}
-        rate = {1}
-        source={require('../assets/flightvideo.mp4')}
-        useNativeControls={false}
-        resizeMode="cover"
-        isLooping
-        isMuted
-        shouldPlay
-      />
-        <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"width": idealHW, "height": idealHW, "resizeMode": "contain", "margin": 20}}></Image>
-        <Text>Welcome!</Text>
-        <Button
-            title="Sign up"
-            onPress={() =>
-            navigation.navigate("SignUp")
-            }
-        />
-        <View style = {styles.between}></View>
-        <Button
-            title="Log in"
-            onPress={() =>
-            navigation.navigate("LogIn")
-            }
-        />
-        </View>
+            <>
+            <Video
+            style = {stylesheet.video}
+            rate = {1}
+            source={require('../assets/airportview.mp4')}
+            useNativeControls={false}
+            resizeMode="cover"
+            isLooping
+            isMuted
+            shouldPlay
+            />
+            <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"width": idealHW, "height": 150, "resizeMode": "contain", "margin": 20}}></Image>
+            <Text numberOfLines={2} adjustsFontSizeToFit = {true}className = {styles.tagline}>Broaden your horizons and experience a whole new world</Text>
+    
+            <View className={styles.container}>
+                <Pressable
+                    // style = {{
+                    //     height: 100, width: 200, backgroundColor: 'black', padding: 20, margin: 10}}
+                    className={styles.button}
+                    onPress={() => navigation.navigate("SignUp")}
+                >
+                        <Text className={styles.textButtonLight}>Sign up</Text>
+                </Pressable>
+            
+                <Pressable
+                    className={styles.button}
+                    onPress={() =>navigation.navigate("LogIn")}
+                >
+                    <Text className={styles.textButtonLight}>Log in</Text>
+                </Pressable>
+            </View>
+        </>
     );
 }
 
@@ -50,7 +60,7 @@ export default function AuthNavigation() {
         </Stack.Navigator>
     );
 }
-  const styles = StyleSheet.create({
+  const stylesheet = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
