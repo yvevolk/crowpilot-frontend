@@ -10,7 +10,7 @@ import Loader from './Loader';
 const Stack = createNativeStackNavigator();
 
 export default function AuthenticationFlows() {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const { userToken } = useContext(AuthContext);
     if (isLoading) {
         setTimeout(() => setIsLoading(false) , 1000)   
