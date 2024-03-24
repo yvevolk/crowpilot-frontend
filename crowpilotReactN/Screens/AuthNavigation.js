@@ -5,6 +5,7 @@ import LogIn from './LogIn.js';
 import { Video } from 'expo-av';
 import { useContext } from 'react';
 import { StylesContext } from '../Contexts/ThemeContext.js';
+import Tagline from './Tagline.js';
 
 const dimensions = Dimensions.get('screen')
 const idealHW = (dimensions.width * 0.8)
@@ -25,9 +26,11 @@ function Welcome({ navigation }) {
             isMuted
             shouldPlay
             />
-            <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"width": idealHW, "height": 150, "resizeMode": "contain", "margin": 20}}></Image>
-            <Text numberOfLines={2} adjustsFontSizeToFit = {true}className = {styles.tagline}>Broaden your horizons and experience a whole new world</Text>
-    
+            <View styles = {{'flex': 1, 'justify-content': 'flex-end'}}>
+            <Image source = {require('../assets/Crowpilot_text.png')} alt = "Crowpilot logo" style = {{"height": 50, "resizeMode": "contain", "margin": 80,  'padding': 50}}/></View>
+
+            <Tagline/>
+            
             <View className={styles.container}>
                 <Pressable
                     // style = {{
